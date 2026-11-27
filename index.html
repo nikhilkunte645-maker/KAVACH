@@ -18,41 +18,33 @@
         </svg>
         <span>KAVACH</span>
       </div>
-      <span class="brand-badge">
+      <span class="brand-badge" id="privacy-status-pill">
         <span class="pulse-dot" aria-hidden="true"></span>
-        <span>ZERO-LEAK RAM</span>
+        <span>100% Client-Side • Zero Network Leaks</span>
       </span>
     </div>
 
-    <!-- Liquid Glass Tab Bar Navigation -->
+    <!-- Liquid Glass Tab Bar Navigation (Consolidated to Exactly 3 Tabs) -->
     <nav class="liquid-glass-container" role="tablist" aria-label="Main Navigation">
       <div class="glass-lens" id="glass-lens" aria-hidden="true"></div>
       <button class="liquid-tab-btn active" data-tab="tab-workspace" role="tab" aria-selected="true" id="tab-btn-workspace" tabindex="0">
         <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
-        <span>Redact</span>
-      </button>
-      <button class="liquid-tab-btn" data-tab="tab-analytics" role="tab" aria-selected="false" id="tab-btn-analytics" tabindex="-1">
-        <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-        </svg>
-        <span>Analytics & Logs</span>
+        <span>Workspace</span>
       </button>
       <button class="liquid-tab-btn" data-tab="tab-selftest" role="tab" aria-selected="false" id="tab-btn-selftest" tabindex="-1">
         <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M9 11l3 3L22 4"/>
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>
-        <span>Self-Test Runner</span>
+        <span>Self-Test Suite</span>
       </button>
-      <button class="liquid-tab-btn" data-tab="tab-docs" role="tab" aria-selected="false" id="tab-btn-docs" tabindex="-1">
+      <button class="liquid-tab-btn" data-tab="tab-analytics" role="tab" aria-selected="false" id="tab-btn-analytics" tabindex="-1">
         <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
-          <path d="M6 6h10"/>
-          <path d="M6 10h10"/>
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
-        <span>Security Spec</span>
+        <span>Privacy & Audit Logs</span>
       </button>
     </nav>
 
@@ -442,6 +434,56 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
           </div>
         </div>
 
+        <!-- Security Architecture Spec (Secondary Section Preserving id="tab-docs" & id="tab-btn-docs") -->
+        <div id="tab-docs" class="inspector-card spec-embedded-card">
+          <div class="inspector-header">
+            <span class="inspector-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                <path d="M6 6h10"/>
+                <path d="M6 10h10"/>
+              </svg>
+              <span>Security Specification & Architecture</span>
+            </span>
+            <button id="tab-btn-docs" class="btn btn-secondary btn-micro" title="Verified Architecture">Verified Spec</button>
+          </div>
+          <article class="doc-container">
+            <h1>KAVACH Engineering & Privacy Architecture</h1>
+            <p>KAVACH is a zero-leak, 100% client-side privacy engine designed to sanitize PII locally in user memory before any data is exported or transferred.</p>
+
+            <h2>1. Zero-Leak Execution Model</h2>
+            <p>
+              All operations occur strictly within transient JavaScript heap memory inside the local web browser.
+              The codebase contains zero calls to <code>fetch()</code>, <code>XMLHttpRequest</code>, <code>WebSocket</code>,
+              <code>EventSource</code>, or <code>navigator.sendBeacon()</code>. Zero analytics trackers or external CDN runtime scripts exist.
+            </p>
+
+            <h2>2. Deterministic Validation Engine</h2>
+            <ul>
+              <li><strong>Credit Cards:</strong> 13–19 digit candidate extraction with strict ISO/IEC 7812-1 modulus 10 Luhn checksum validation. Rejects corrupted numbers, 12-digit and 20-digit strings, and embedded IDs.</li>
+              <li><strong>Indian PAN:</strong> <code>[A-Z]{5}[0-9]{4}[A-Z]</code> validation with strict left and right word boundary isolation.</li>
+              <li><strong>IPv4 Addresses:</strong> Exactly 4 octets, each in [0, 255]. Rejects negative octets and software version strings (e.g. <code>v1.2.3.4</code>, <code>release-2.3.4.5</code>).</li>
+              <li><strong>Indian Aadhaar:</strong> 12-digit candidate validation with Dihedral Group D5 Verhoeff checksum algorithm.</li>
+              <li><strong>Indian Mobile:</strong> 10-digit mobile detection starting with 6–9 with prefix normalization (<code>+91</code>, <code>0</code>), rejecting dates and timestamps.</li>
+              <li><strong>International Phone:</strong> E.164 boundary constraints [8, 15] digits.</li>
+              <li><strong>Email:</strong> RFC 5322 syntax validation with automatic trailing sentence punctuation trimming.</li>
+            </ul>
+
+            <h2>3. RFC-4180 CSV Engine & Injection Defense</h2>
+            <p>
+              KAVACH features a state-machine CSV parser that natively supports quoted commas, escaped double quotes (<code>""</code>),
+              and embedded multiline strings. It enforces an explicit CSV formula injection shield, prepending <code>'</code>
+              to any cell beginning with <code>=, +, -, @, \t, \r</code>.
+            </p>
+
+            <h2>4. Deterministic Overlap Resolution</h2>
+            <p>
+              Candidate spans are sorted by <code>start ascending</code>, <code>length descending</code>, and deterministic priority tie-breaking.
+              Half-open intervals <code>[start, end)</code> guarantee that no character is ever double-redacted.
+            </p>
+          </article>
+        </div>
+
       </div>
     </div>
 
@@ -498,45 +540,6 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
         </div>
 
       </div>
-    </div>
-
-    <!-- 4. SECURITY SPECIFICATION VIEW -->
-    <div id="tab-docs" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-docs">
-      <article class="doc-container">
-        <h1>KAVACH Engineering & Privacy Architecture</h1>
-        <p>KAVACH is a zero-leak, 100% client-side privacy engine designed to sanitize PII locally in user memory before any data is exported or transferred.</p>
-
-        <h2>1. Zero-Leak Execution Model</h2>
-        <p>
-          All operations occur strictly within transient JavaScript heap memory inside the local web browser.
-          The codebase contains zero calls to <code>fetch()</code>, <code>XMLHttpRequest</code>, <code>WebSocket</code>,
-          <code>EventSource</code>, or <code>navigator.sendBeacon()</code>. Zero analytics trackers or external CDN runtime scripts exist.
-        </p>
-
-        <h2>2. Deterministic Validation Engine</h2>
-        <ul>
-          <li><strong>Credit Cards:</strong> 13–19 digit candidate extraction with strict ISO/IEC 7812-1 modulus 10 Luhn checksum validation. Rejects corrupted numbers, 12-digit and 20-digit strings, and embedded IDs.</li>
-          <li><strong>Indian PAN:</strong> <code>[A-Z]{5}[0-9]{4}[A-Z]</code> validation with strict left and right word boundary isolation.</li>
-          <li><strong>IPv4 Addresses:</strong> Exactly 4 octets, each in [0, 255]. Rejects negative octets and software version strings (e.g. <code>v1.2.3.4</code>, <code>release-2.3.4.5</code>).</li>
-          <li><strong>Indian Aadhaar:</strong> 12-digit candidate validation with Dihedral Group D5 Verhoeff checksum algorithm.</li>
-          <li><strong>Indian Mobile:</strong> 10-digit mobile detection starting with 6–9 with prefix normalization (<code>+91</code>, <code>0</code>), rejecting dates and timestamps.</li>
-          <li><strong>International Phone:</strong> E.164 boundary constraints [8, 15] digits.</li>
-          <li><strong>Email:</strong> RFC 5322 syntax validation with automatic trailing sentence punctuation trimming.</li>
-        </ul>
-
-        <h2>3. RFC-4180 CSV Engine & Injection Defense</h2>
-        <p>
-          KAVACH features a state-machine CSV parser that natively supports quoted commas, escaped double quotes (<code>""</code>),
-          and embedded multiline strings. It enforces an explicit CSV formula injection shield, prepending <code>'</code>
-          to any cell beginning with <code>=, +, -, @, \t, \r</code>.
-        </p>
-
-        <h2>4. Deterministic Overlap Resolution</h2>
-        <p>
-          Candidate spans are sorted by <code>start ascending</code>, <code>length descending</code>, and deterministic priority tie-breaking.
-          Half-open intervals <code>[start, end)</code> guarantee that no character is ever double-redacted.
-        </p>
-      </article>
     </div>
 
   </main>

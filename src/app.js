@@ -96,6 +96,14 @@ function updateGlassLens(activeBtn) {
  * @param {string} targetId
  */
 function activateTab(targetId) {
+  if (targetId === 'tab-docs') {
+    targetId = 'tab-analytics';
+    setTimeout(() => {
+      const specEl = document.getElementById('tab-docs');
+      specEl?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+  }
+
   tabBtns.forEach((btn) => {
     const isTarget = btn.getAttribute('data-tab') === targetId;
     btn.classList.toggle('active', isTarget);
