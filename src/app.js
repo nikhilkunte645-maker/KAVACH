@@ -864,7 +864,7 @@ function initEventListeners() {
     inputText.value = `# Customer KYC & Payment Verification Log
 Customer: Priya Sharma <priya.sharma@example.com>
 Phone: +91 98765 43210
-PAN: ABCDE1234F | Aadhaar: 2345 6789 0123
+PAN: ABCDE1234F | Aadhaar: 2345 6789 0124
 Client IP: 192.168.1.24
 Primary Card: 4111 1111 1111 1111
 Fallback Card (Test): 4111 1111 1111 1112 (Luhn-Rejected)
