@@ -90,4 +90,17 @@ describe('3. CSV Formula Injection Defense', () => {
     assert.strictEqual(parsed[1][0], "'=cmd");
     assert.strictEqual(parsed[1][1], '[REDACTED_EMAIL]');
   });
+
+  it('should track Luhn-rejected card candidates inside CSV cells', () => {
+    const csv = 'Name,Card\r\nAlice,4111111111111112';
+    const p = new Pseudonymizer();
+    const res = processCsv(csv, {
+      redactionMode: RedactionMode.FULL_MASK,
+      pseudonymizer: p
+    });
+    assert.strictEqual(res.findings.length, 0);
+    assert.ok(Array.isArray(res.rejectedCandidates), 'rejectedCandidates should be an array');
+    assert.strictEqual(res.rejectedCandidates.length, 1);
+    assert.strictEqual(res.rejectedCandidates[0].status, 'INVALID_LUHN');
+  });
 });

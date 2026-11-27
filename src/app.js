@@ -349,14 +349,34 @@ export function runProcessing() {
     }
     renderFindingsTable(csvResult.findings);
 
-    const luhnRejected = 0;
+    const luhnRejected = (csvResult.rejectedCandidates || []).filter(
+      (c) => c.type === PiiType.CREDIT_CARD && (c.status === ValidationStatus.INVALID_LUHN || c.status === 'INVALID_LUHN')
+    ).length;
 
     updateAnalyticsCards(csvResult.countsByType, csvResult.findings.length, luhnRejected);
 
-    // Render preview diff safely
-    const previewRaw = text.slice(0, 3000);
-    const previewFindings = csvResult.findings.filter((f) => f.start < 3000);
-    const diffSegs = computeDiffSegments(previewRaw, previewFindings);
+    // Render CSV preview diff safely cell-by-cell (avoids cell-local vs raw-text offset mismatch)
+    const diffSegs = [];
+    let previewLen = 0;
+    for (let r = 0; r < csvResult.originalRows.length && previewLen < 3000; r++) {
+      const origRow = csvResult.originalRows[r];
+      const redRow = csvResult.redactedRows[r] || origRow;
+      for (let c = 0; c < origRow.length && previewLen < 3000; c++) {
+        if (c > 0) diffSegs.push({ type: 'unchanged', text: ',' });
+        const origCell = origRow[c];
+        const redCell = redRow[c] ?? origCell;
+        if (origCell === redCell) {
+          diffSegs.push({ type: 'unchanged', text: origCell });
+        } else {
+          diffSegs.push({ type: 'removed', text: origCell, piiType: 'CSV_CELL' });
+          diffSegs.push({ type: 'added', text: redCell, piiType: 'CSV_CELL' });
+        }
+        previewLen += origCell.length + 1;
+      }
+      if (r < csvResult.originalRows.length - 1) {
+        diffSegs.push({ type: 'unchanged', text: '\n' });
+      }
+    }
     if (diffOutput) renderSafeDiffToDom(diffOutput, diffSegs);
   } else {
     if (sourceFormatLabel) sourceFormatLabel.textContent = 'Raw Text';

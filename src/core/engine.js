@@ -133,6 +133,7 @@ export function processText(text, options) {
  *   originalRows: Array<Array<string>>,
  *   redactedRows: Array<Array<string>>,
  *   findings: Array<any>,
+ *   rejectedCandidates: Array<any>,
  *   countsByType: Record<string, number>
  * }}
  */
@@ -144,9 +145,13 @@ export function processCsv(csvText, options) {
       originalRows: [],
       redactedRows: [],
       findings: [],
+      rejectedCandidates: [],
       countsByType: {}
     };
   }
+
+  /** @type {Array<any>} */
+  const allRejectedCandidates = [];
 
   const { redactedRows, allFindings } = processCsvCells(originalRows, (cellText, row, col) => {
     const result = processText(cellText, {
@@ -154,6 +159,14 @@ export function processCsv(csvText, options) {
       // Pass the same pseudonymizer so cross-cell pseudonym consistency is maintained!
       pseudonymizer: options.pseudonymizer
     });
+    if (result.rejectedCandidates && result.rejectedCandidates.length > 0) {
+      for (const rc of result.rejectedCandidates) {
+        allRejectedCandidates.push({
+          ...rc,
+          cellCoord: { row, col }
+        });
+      }
+    }
     return {
       redactedText: result.redactedText,
       findings: result.findings
@@ -183,6 +196,7 @@ export function processCsv(csvText, options) {
     originalRows,
     redactedRows,
     findings: allFindings,
+    rejectedCandidates: allRejectedCandidates,
     countsByType
   };
 }
