@@ -273,17 +273,6 @@ function initSegmentedControl() {
       runProcessing();
     });
   });
-
-  modeLabels.forEach((lbl) => {
-    lbl?.addEventListener('click', () => {
-      const input = lbl.querySelector('input');
-      if (input) {
-        input.checked = true;
-        modeLabels.forEach((l) => l?.classList.toggle('active', l === lbl));
-        runProcessing();
-      }
-    });
-  });
 }
 
 /**
@@ -848,7 +837,6 @@ function initEventListeners() {
   Object.values(detCheckboxes).forEach((chk) => {
     chk?.addEventListener('change', runProcessing);
   });
-  redactionModeRadios.forEach((rad) => rad.addEventListener('change', runProcessing));
   optFormulaShield?.addEventListener('change', runProcessing);
   optAadhaarVerhoeff?.addEventListener('change', runProcessing);
 
