@@ -26,6 +26,7 @@ const fileInput = /** @type {HTMLInputElement} */ (document.getElementById('file
 const btnCopyOutput = document.getElementById('btn-copy-output');
 const btnClearInput = document.getElementById('btn-clear-input');
 const btnLoadSample = document.getElementById('btn-load-sample');
+const btnRunRedact = document.getElementById('btn-run-redact');
 const btnExportRedacted = document.getElementById('btn-export-redacted');
 const btnExportLogs = document.getElementById('btn-export-logs');
 const btnExportLogsPane = document.getElementById('btn-export-logs-pane');
@@ -35,6 +36,7 @@ const btnRunTests = document.getElementById('btn-run-tests');
 const heroBtnRedact = document.getElementById('hero-btn-redact');
 const heroBtnSelfTest = document.getElementById('hero-btn-selftest');
 const logTerminal = document.getElementById('log-terminal');
+const diffStatusLabel = document.getElementById('diff-status-label');
 
 // Metric elements for self-test
 const metricTotal = document.getElementById('metric-total');
@@ -197,6 +199,7 @@ export function runProcessing() {
 
   if (!text) {
     outputText.value = '';
+    if (diffStatusLabel) diffStatusLabel.textContent = 'No modifications';
     while (diffOutput?.firstChild) diffOutput.removeChild(diffOutput.firstChild);
     if (diffOutput) {
       const span = document.createElement('span');
@@ -227,6 +230,9 @@ export function runProcessing() {
 
     outputText.value = csvResult.redactedCsv;
     if (findingsCountBadge) findingsCountBadge.textContent = String(csvResult.findings.length);
+    if (diffStatusLabel) {
+      diffStatusLabel.textContent = `${csvResult.findings.length} modification${csvResult.findings.length === 1 ? '' : 's'}`;
+    }
     renderFindingsTable(csvResult.findings);
     updateAnalyticsCards(csvResult.countsByType, csvResult.findings.length);
 
@@ -246,6 +252,9 @@ export function runProcessing() {
 
     outputText.value = textResult.redactedText;
     if (findingsCountBadge) findingsCountBadge.textContent = String(textResult.findings.length);
+    if (diffStatusLabel) {
+      diffStatusLabel.textContent = `${textResult.findings.length} modification${textResult.findings.length === 1 ? '' : 's'}`;
+    }
     renderFindingsTable(textResult.findings);
     updateAnalyticsCards(textResult.countsByType, textResult.findings.length);
 
@@ -565,14 +574,38 @@ Aadhaar ID: 3675 9832 4518
 International Office: +1 415 555 2671`;
     stateManager.sourceType = 'text';
     runProcessing();
+    logger.log({
+      operation: 'SAMPLE_LOAD',
+      category: 'DATA',
+      count: 7,
+      status: 'SUCCESS',
+      details: 'Loaded sample multi-category PII test data into memory.'
+    });
+  });
+
+  // Explicit Redact Button Click
+  btnRunRedact?.addEventListener('click', () => {
+    runProcessing();
+    logger.log({
+      operation: 'REDACT',
+      category: 'ENGINE',
+      status: 'SUCCESS',
+      details: 'Executed PII redaction and interval verification pass.'
+    });
   });
 
   // Copy output
   btnCopyOutput?.addEventListener('click', async () => {
     if (outputText.value) {
       await navigator.clipboard.writeText(outputText.value);
-      btnCopyOutput.textContent = 'Copied!';
-      setTimeout(() => (btnCopyOutput.textContent = 'Copy'), 1500);
+      const span = btnCopyOutput.querySelector('span');
+      if (span) {
+        const originalText = span.textContent;
+        span.textContent = 'Copied!';
+        setTimeout(() => {
+          span.textContent = originalText || 'Copy';
+        }, 1500);
+      }
     }
   });
 

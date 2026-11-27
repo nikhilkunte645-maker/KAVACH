@@ -8,33 +8,50 @@
 </head>
 <body>
 
-  <!-- 1. Header (48px compact) -->
+  <!-- 1. Header (Compact Linear/Raycast Workbench Bar) -->
   <header class="kavach-header">
     <div class="brand-section">
       <div class="brand-title">
-        <span class="shield-icon" aria-hidden="true">🛡️</span>
+        <svg class="brand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
         <span>KAVACH</span>
       </div>
-      <span class="brand-badge">ZERO-LEAK RAM</span>
+      <span class="brand-badge">
+        <span class="pulse-dot" aria-hidden="true"></span>
+        <span>ZERO-LEAK RAM</span>
+      </span>
     </div>
 
     <!-- Liquid Glass Tab Bar Navigation -->
     <nav class="liquid-glass-container" role="tablist" aria-label="Main Navigation">
       <div class="glass-lens" id="glass-lens" aria-hidden="true"></div>
       <button class="liquid-tab-btn active" data-tab="tab-workspace" role="tab" aria-selected="true" id="tab-btn-workspace" tabindex="0">
-        <span class="tab-icon">🛡️</span>
+        <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
         <span>Redact</span>
       </button>
       <button class="liquid-tab-btn" data-tab="tab-analytics" role="tab" aria-selected="false" id="tab-btn-analytics" tabindex="-1">
-        <span class="tab-icon">📊</span>
+        <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
         <span>Analytics & Logs</span>
       </button>
       <button class="liquid-tab-btn" data-tab="tab-selftest" role="tab" aria-selected="false" id="tab-btn-selftest" tabindex="-1">
-        <span class="tab-icon">🧪</span>
+        <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
         <span>Self-Test Runner</span>
       </button>
       <button class="liquid-tab-btn" data-tab="tab-docs" role="tab" aria-selected="false" id="tab-btn-docs" tabindex="-1">
-        <span class="tab-icon">📖</span>
+        <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+          <path d="M6 6h10"/>
+          <path d="M6 10h10"/>
+        </svg>
         <span>Security Spec</span>
       </button>
     </nav>
@@ -42,28 +59,44 @@
     <!-- Header Actions -->
     <div class="header-actions">
       <button id="btn-reset" class="btn btn-danger" title="Wipes transient memory and resets application state">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+          <path d="M21 3v5h-5"/>
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+          <path d="M8 16H3v5"/>
+        </svg>
         <span>Reset / Wipe</span>
       </button>
     </div>
   </header>
 
-  <!-- 2. Ultra-Compact Security Hero Bar (38px compact) -->
+  <!-- 2. Ultra-Compact Security Hero Status Strip (38px height) -->
   <section class="kavach-hero">
     <div class="hero-content">
       <span class="hero-title">
-        <span>🛡️</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-icon" aria-hidden="true">
+          <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
         <span>Your data stays yours.</span>
       </span>
+      <span class="hero-divider" aria-hidden="true">•</span>
       <span class="hero-desc">
-        100% in-browser RAM execution. Deterministic checksums (Luhn, Verhoeff), RFC-4180 CSV, zero cloud transmission.
+        100% in-browser RAM execution. Deterministic Luhn & Verhoeff checksums, RFC-4180 CSV, zero network calls.
       </span>
     </div>
     <div class="hero-actions">
       <button id="hero-btn-redact" class="btn btn-shiny">
         <span>Start Redacting</span>
-        <span>→</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
       </button>
       <button id="hero-btn-selftest" class="btn btn-outline-cyan">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
         <span>Run Self-Test (61)</span>
       </button>
     </div>
@@ -84,23 +117,23 @@
             <h2 class="section-title">Active PII Detectors</h2>
             <div class="control-group">
               <label class="toggle-label">
-                <span>Credit Cards (13-19 digits, Luhn)</span>
+                <span>Credit Cards (Luhn mod-10)</span>
                 <input type="checkbox" id="det-cc" checked>
               </label>
               <label class="toggle-label">
-                <span>Indian PAN ([A-Z]{5}[0-9]{4}[A-Z])</span>
+                <span>Indian PAN (Alphanumeric)</span>
                 <input type="checkbox" id="det-pan" checked>
               </label>
               <label class="toggle-label">
-                <span>Indian Aadhaar (12 digits, Verhoeff)</span>
+                <span>Indian Aadhaar (Verhoeff D5)</span>
                 <input type="checkbox" id="det-aadhaar" checked>
               </label>
               <label class="toggle-label">
-                <span>IPv4 (Octets 0-255, Non-version)</span>
+                <span>IPv4 (Octets 0-255)</span>
                 <input type="checkbox" id="det-ipv4" checked>
               </label>
               <label class="toggle-label">
-                <span>Indian Mobile (+91 / 0 / 10-digit)</span>
+                <span>Indian Mobile (+91/0)</span>
                 <input type="checkbox" id="det-phone-in" checked>
               </label>
               <label class="toggle-label">
@@ -108,7 +141,7 @@
                 <input type="checkbox" id="det-phone-intl" checked>
               </label>
               <label class="toggle-label">
-                <span>Email (RFC 5322 syntax)</span>
+                <span>Email (RFC 5322 Syntax)</span>
                 <input type="checkbox" id="det-email" checked>
               </label>
             </div>
@@ -116,27 +149,27 @@
 
           <!-- Redaction Mode Selection -->
           <div class="sidebar-section">
-            <h2 class="section-title">Redaction Mode</h2>
+            <h2 class="section-title">Redaction Strategy</h2>
             <div class="radio-group">
               <label class="radio-label">
                 <input type="radio" name="redaction-mode" value="FULL_MASK" checked>
                 <div>
                   <strong>Full Mask</strong>
-                  <span class="radio-desc">Replace entire token with [REDACTED_TYPE]</span>
+                  <span class="radio-desc">Replace token with [REDACTED_TYPE]</span>
                 </div>
               </label>
               <label class="radio-label">
                 <input type="radio" name="redaction-mode" value="PARTIAL_MASK">
                 <div>
                   <strong>Partial Mask</strong>
-                  <span class="radio-desc">Safe tails only (e.g. u***@e******.com, ****1234)</span>
+                  <span class="radio-desc">Preserve safe tails (u***@e***.com, ****1234)</span>
                 </div>
               </label>
               <label class="radio-label">
                 <input type="radio" name="redaction-mode" value="PSEUDONYMIZE">
                 <div>
-                  <strong>Consistent Pseudonymization</strong>
-                  <span class="radio-desc">Deterministic run-tokens (EMAIL_01, CARD_01)</span>
+                  <strong>Pseudonymization</strong>
+                  <span class="radio-desc">Consistent run-scoped tokens (EMAIL_01)</span>
                 </div>
               </label>
             </div>
@@ -147,11 +180,11 @@
             <h2 class="section-title">Security Policies</h2>
             <div class="control-group">
               <label class="toggle-label" title="Prefix cells starting with =, +, -, @ with single quote">
-                <span>CSV Formula Injection Shield</span>
+                <span>CSV Formula Shield</span>
                 <input type="checkbox" id="opt-formula-shield" checked>
               </label>
               <label class="toggle-label" title="Require Verhoeff checksum for Aadhaar">
-                <span>Strict Aadhaar Verhoeff Check</span>
+                <span>Strict Aadhaar Verhoeff</span>
                 <input type="checkbox" id="opt-aadhaar-verhoeff" checked>
               </label>
             </div>
@@ -162,9 +195,21 @@
             <h2 class="section-title">Safe Export</h2>
             <div class="control-group">
               <button id="btn-export-redacted" class="btn btn-shiny">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
                 <span>Download Redacted File</span>
               </button>
               <button id="btn-export-logs" class="btn btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
                 <span>Export Activity Log (JSON)</span>
               </button>
             </div>
@@ -177,20 +222,34 @@
 
           <!-- Slim Workspace Toolbar -->
           <div class="workspace-toolbar">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div class="toolbar-left-actions">
               <div id="drop-zone" class="compact-drop-zone" tabindex="0" role="button" aria-label="Upload File">
-                <span>📁</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
                 <span>Upload .txt / .csv</span>
                 <input type="file" id="file-input" accept=".txt,.csv,text/plain,text/csv" style="display: none;">
               </div>
-              <button id="btn-load-sample" class="btn btn-secondary" style="height: 32px;">
-                <span>⚡ Load Sample PII</span>
+              <button id="btn-load-sample" class="btn btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                <span>Load Sample Data</span>
+              </button>
+              <button id="btn-run-redact" class="btn btn-primary btn-shiny">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span>Redact</span>
               </button>
             </div>
 
             <div class="toolbar-info">
-              <span>Format: <strong id="source-format-label" class="status-pill">Raw Text</strong></span>
-              <span>Length: <strong id="char-count" style="font-family: var(--font-mono); color: var(--text-primary);">0 chars</strong></span>
+              <span class="info-item">Format: <strong id="source-format-label" class="status-pill">Raw Text</strong></span>
+              <span class="info-item">Length: <strong id="char-count" class="mono-badge">0 chars</strong></span>
             </div>
           </div>
 
@@ -199,10 +258,19 @@
             <div class="editor-card">
               <div class="editor-header">
                 <span class="editor-title">
-                  <span>📝</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
                   <span>Source Input</span>
                 </span>
-                <button id="btn-clear-input" class="btn btn-secondary" style="height: 22px; padding: 0.1rem 0.5rem; font-size: 0.7rem;">Clear</button>
+                <button id="btn-clear-input" class="btn btn-secondary btn-micro" title="Clear input text">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                  <span>Clear</span>
+                </button>
               </div>
               <textarea id="input-text" class="editor-textarea" placeholder="Paste sensitive text or CSV here...
 Example:
@@ -212,11 +280,20 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
             <div class="editor-card">
               <div class="editor-header">
                 <span class="editor-title">
-                  <span>🔒</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
                   <span>Redacted Output</span>
                 </span>
                 <div style="display: flex; gap: 0.35rem;">
-                  <button id="btn-copy-output" class="btn btn-shiny" style="height: 22px; padding: 0.1rem 0.55rem; font-size: 0.7rem;">Copy</button>
+                  <button id="btn-copy-output" class="btn btn-shiny btn-micro" title="Copy redacted text to clipboard">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
                 </div>
               </div>
               <textarea id="output-text" class="editor-textarea" readonly placeholder="Redacted output will appear here automatically..."></textarea>
@@ -229,8 +306,16 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
             <!-- Safe Visual Diff -->
             <div class="inspector-card">
               <div class="inspector-header">
-                <span class="inspector-title">Safe Visual Diff (XSS-Inert TextNodes)</span>
-                <span id="diff-status-label" style="font-size: 0.7rem; color: var(--text-muted);">No modifications</span>
+                <span class="inspector-title">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="18" cy="18" r="3"/>
+                    <circle cx="6" cy="6" r="3"/>
+                    <path d="M6 9v12"/>
+                    <path d="M18 9a9 9 0 0 0-9 9"/>
+                  </svg>
+                  <span>Safe Visual Diff (XSS-Inert TextNodes)</span>
+                </span>
+                <span id="diff-status-label" class="header-hint">No modifications</span>
               </div>
               <div id="diff-output" class="diff-container">
                 <span class="diff-unchanged">Input text above to see side-by-side safe redaction diff...</span>
@@ -240,8 +325,18 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
             <!-- Detected Findings Table -->
             <div class="inspector-card">
               <div class="inspector-header">
-                <span class="inspector-title">Detected Findings (<span id="findings-count-badge" style="color: var(--accent-cyan);">0</span>)</span>
-                <span style="font-size: 0.7rem; color: var(--text-muted);">Resolved spans [start, end)</span>
+                <span class="inspector-title">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                  </svg>
+                  <span>Detected Findings (<span id="findings-count-badge" class="count-highlight">0</span>)</span>
+                </span>
+                <span class="header-hint">Resolved spans [start, end)</span>
               </div>
               <div class="table-scroll-container">
                 <table class="findings-table">
@@ -256,7 +351,7 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
                   </thead>
                   <tbody id="findings-tbody">
                     <tr>
-                      <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1rem;">No PII findings detected in current input.</td>
+                      <td colspan="5" class="empty-table-cell">No PII findings detected in current input.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -275,14 +370,27 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
       <div class="analytics-container">
         <div class="pane-header-row">
           <div>
-            <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff;">Privacy Analytics & Operational Telemetry</h2>
-            <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            <h2 class="pane-title">Privacy Analytics & Operational Telemetry</h2>
+            <p class="pane-subtitle">
               Non-sensitive execution metrics and local transient audit logs. Zero raw PII recorded.
             </p>
           </div>
-          <div style="display: flex; gap: 0.5rem;">
-            <button id="btn-clear-logs" class="btn btn-secondary">Clear Logs</button>
-            <button id="btn-export-logs-pane" class="btn btn-shiny">Export JSON Log</button>
+          <div class="pane-actions">
+            <button id="btn-clear-logs" class="btn btn-secondary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              <span>Clear Logs</span>
+            </button>
+            <button id="btn-export-logs-pane" class="btn btn-shiny">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Export JSON Log</span>
+            </button>
           </div>
         </div>
 
@@ -327,7 +435,7 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
         <div class="inspector-card" style="flex: 1; min-height: 240px;">
           <div class="inspector-header">
             <span class="inspector-title">Local Transient Activity Log</span>
-            <span style="font-size: 0.7rem; color: var(--text-muted);">Buffered in JavaScript heap memory (Max 500 entries)</span>
+            <span class="header-hint">Buffered in JavaScript heap memory (Max 500 entries)</span>
           </div>
           <div class="log-terminal" id="log-terminal" role="log" aria-live="polite">
             <!-- Real-time log entries inserted here -->
@@ -343,13 +451,16 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
 
         <div class="pane-header-row">
           <div>
-            <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff;">Automated Verification Suite</h2>
-            <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            <h2 class="pane-title">Automated Verification Suite</h2>
+            <p class="pane-subtitle">
               Directly executes production detection, Luhn/Verhoeff checksums, RFC-4180 CSV, and privacy logic (Categories A through K).
             </p>
           </div>
           <button id="btn-run-tests" class="btn btn-shiny" style="padding: 0.5rem 1.25rem;">
-            <span>▶ Run All 61 Self-Tests</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Run All 61 Self-Tests</span>
           </button>
         </div>
 
@@ -377,10 +488,10 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
         <div class="test-list-card">
           <div class="inspector-header">
             <span class="inspector-title">Test Verification Checklist (Categories A through K)</span>
-            <span id="test-runner-status" style="font-size: 0.75rem; color: var(--text-muted);">Ready to execute</span>
+            <span id="test-runner-status" class="header-hint">Ready to execute</span>
           </div>
           <div class="test-scroll-area" id="test-results-list">
-            <div style="padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+            <div style="padding: 2.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
               Click <strong>"Run All 61 Self-Tests"</strong> to execute the full deterministic verification suite.
             </div>
           </div>
@@ -392,7 +503,7 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
     <!-- 4. SECURITY SPECIFICATION VIEW -->
     <div id="tab-docs" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-docs">
       <article class="doc-container">
-        <h1>🛡️ KAVACH Engineering & Privacy Architecture</h1>
+        <h1>KAVACH Engineering & Privacy Architecture</h1>
         <p>KAVACH is a zero-leak, 100% client-side privacy engine designed to sanitize PII locally in user memory before any data is exported or transferred.</p>
 
         <h2>1. Zero-Leak Execution Model</h2>
