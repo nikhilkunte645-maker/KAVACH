@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node"],
     "allowJs": true,
@@ -17,6 +22,8 @@
   "include": [
     "src/**/*",
     "test/**/*",
-    "scripts/**/*"
+    "scripts/**/*",
+    "components/**/*",
+    "lib/**/*"
   ]
 }

@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --color-border: #dce4ef;
+  --color-accent: #315fea;
+}
+
+.dark {
+  --color-border: #263449;
+  --color-accent: #4f7cff;
+}

@@ -35,7 +35,10 @@ function copyRecursive(src, dest) {
 const ASSETS_TO_BUILD = [
   'index.html',
   'style.css',
-  'src'
+  'globals.css',
+  'src',
+  'components',
+  'lib'
 ];
 
 for (const asset of ASSETS_TO_BUILD) {
