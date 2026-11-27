@@ -1,113 +1,142 @@
-# KAVACH — 100% Client-Side PII Redactor & Privacy Engine
+<p align="center"><img src="./assets/kavach-banner.png" alt="KAVACH: client-side PII redactor" width="100%"></p>
 
-> **KAVACH** is a zero-leak, deterministic client-side privacy engine engineered to detect, validate, redact, pseudonymize, compare, log, and export sensitive personally identifiable information (PII) from raw text, `.txt`, and `.csv` files entirely in local browser memory.
+# KAVACH
+
+**Your Sensitive Data. Your Browser. Your Control.**
+
+A 100% client-side PII redactor that detects, validates, redacts, and exports sensitive personal data locally—nothing leaves your browser.
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-000000?style=flat-square)](https://kavach-three-umber.vercel.app/)
+![Client-Side Only](https://img.shields.io/badge/Client--Side-Only-059669?style=flat-square)
+![61 Self-Tests](https://img.shields.io/badge/Self--Tests-61%20Passing-0891B2?style=flat-square)
 
 ---
 
-## Key Security & Privacy Guarantees
+## Live Demo
 
-1. **Zero-Leak Client-Side Execution:**
-   - All processing executes exclusively in local browser RAM.
-   - Zero outbound requests: no `fetch()`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `navigator.sendBeacon()`, or third-party CDNs.
-   - Works 100% offline with zero external network dependencies.
-2. **Zero Persistent Storage:**
-   - Never writes sensitive data or raw PII to `localStorage`, `sessionStorage`, `IndexedDB`, cookies, or browser history.
-   - Immediate full transient state wiping on reset.
-3. **Deterministic Mathematical Validation:**
-   - **Credit Cards:** 13–19 digits, separator normalization, boundary checks against longer numbers, strict ISO/IEC 7812-1 modulus 10 Luhn checksum validation.
-   - **Indian PAN:** Case-insensitive `[A-Z]{5}[0-9]{4}[A-Z]` format with strict left and right word boundary isolation.
-   - **IPv4 Addresses:** Strict 4-octet bounds [0, 255], negative octet rejection, and software version string rejection policy (e.g., `v1.2.3.4`, `release-2.3.4.5`).
-   - **Indian Aadhaar:** 12-digit candidate validation with Dihedral Group D5 Verhoeff checksum algorithm.
-   - **Indian Mobile:** 10-digit mobile detection with `+91` / `0` prefix normalization, date & timestamp false-positive rejection.
-   - **International Phone:** E.164-compatible length and token rules.
-   - **Email:** RFC 5322 syntax validation with automated trailing sentence punctuation trimming.
-4. **Deterministic Overlap Resolution:**
-   - Sorted by `start` ascending, span length descending, and deterministic priority tie-breaking.
-   - Half-open intervals `[start, end)` guarantee that no character is ever double-redacted.
-5. **RFC-4180 CSV Engine & Injection Defense:**
-   - State-machine parser supporting quoted commas, escaped quotes (`""`), and embedded newlines.
-   - CSV formula injection shield prefixes dangerous leading `=, +, -, @, \t, \r` with `'`.
-6. **XSS & HTML Injection Defense:**
-   - Zero unsafe `innerHTML` usage with untrusted strings. All diffs rendered via safe DOM text nodes.
-7. **Privacy-Safe Activity Logs & Analytics:**
-   - Operational metadata (timestamp, operation type, category, counts, status) is stored in transient heap memory. Zero raw PII in logs, console, or exported JSON.
-8. **Built-In Self-Test Runner:**
-   - Interactive browser UI runner and terminal CLI runner (`npm run test:self`) executing 61 automated test cases across Categories A through K.
-9. **Premium Security UI:**
-   - **Liquid Glass Tab Bar:** Pill-shaped glassmorphic navigation with animated glass lens highlight, full WAI-ARIA tab pattern, keyboard navigation (Arrow keys, Home, End), and reduced-motion support.
-   - **Compact Security Hero:** Introducing "KAVACH — Your data stays yours." with ambient lighting and direct workflow triggers.
-   - **Shiny Buttons:** Subtle shimmer animation on primary actions with accessibility and reduced-motion fallbacks.
+Try it live: **[https://kavach-three-umber.vercel.app/](https://kavach-three-umber.vercel.app/)**
+
+### Try it in 60 seconds
+1. Click **Load Sample Data** to populate multi-category test input.
+2. Pick a redaction mode (**Full Mask**, **Partial Mask**, or **Consistent Pseudonymization**).
+3. Click **Redact** to process the input locally.
+4. Inspect the inline **diff** and per-category **counts** (including Luhn-rejected card candidates).
+5. Click **Export** to download the redacted `.txt` or `.csv` file.
+6. Open **Self-Test Suite** and click **Run All Tests** to verify all 61 built-in checks.
+7. Open **Privacy & Audit Logs** to inspect operational metadata (zero raw PII logged).
+
+---
+
+## What It Detects
+
+All detectors and validators are implemented deterministically in [`src/core/detectors.js`](./src/core/detectors.js) and [`src/core/validators.js`](./src/core/validators.js):
+
+| Category | Detection & Validation Rules |
+|---|---|
+| **Emails** | RFC-style `local@domain` matching (`1–64` char local part without leading/trailing/consecutive dots; `1–253` char domain with at least one dot and `2+` char TLD); trims trailing sentence punctuation (`.,;:!?)"'>`). |
+| **Phones** | **Indian Mobile:** optional `+91` / `91` / `0` prefix + 10 digits starting with `6–9`. **International:** E.164-like `+` country prefix with `8–15` total digits. Rejects date/timestamp contexts and alphanumeric-embedded numbers. |
+| **IPv4** | 4 decimal octets (`0–255`), strict digit/dot boundary checks, rejects leading zeros, negative octets, and software version prefixes (e.g., `v1.2.3.4`, `release-2.3.4.5`). |
+| **PAN** | Case-insensitive `[A-Z]{5}[0-9]{4}[A-Z]` normalized to uppercase with strict alphanumeric word-boundary isolation. |
+| **Aadhaar** | 12-digit candidate starting with `2–9` (continuous or `4-4-4` space/hyphen grouping), validated with the Dihedral Group D5 Verhoeff checksum (`validateVerhoeff`). |
+| **Credit Cards** | 13–19 digits (optional spaces/hyphens), validated via ISO/IEC 7812-1 modulus 10 Luhn checksum (`validateLuhn`). Luhn-failing candidates are reported separately and **not** redacted or counted as valid cards. |
+
+Overlapping findings are resolved deterministically (`start` ascending, span length descending, type priority descending) over half-open intervals `[start, end)` so no character is ever double-redacted.
+
+---
+
+## Redaction Modes
+
+- **Full Mask:** Replaces each finding with a typed marker (e.g., `[REDACTED_EMAIL]`, `[REDACTED_CREDIT_CARD]`).
+- **Partial Mask:** Reveals only configured safe portions (e.g., `u***@e******.com`, last 4 digits for cards/Aadhaar/phones, first two octets for IPv4).
+- **Consistent Pseudonymization:** Maps normalized values to deterministic, run-scoped tokens (e.g., `EMAIL_01`, `CARD_01`); identical values within a run map to the same token across text and CSV cells.
+
+---
+
+## Inputs & Outputs
+
+- **Inputs:** Direct typing/pasting, `.txt` and `.csv` file upload (click or drag-and-drop).
+- **CSV Engine:** RFC-4180 state-machine parser supporting quoted commas, escaped quotes (`""`), and embedded newlines, plus spreadsheet formula-injection defense (prepends `'` to cells starting with `=`, `+`, `-`, `@`, `\t`, or `\r`).
+- **Outputs:** Side-by-side original vs. redacted panes, XSS-safe inline diff, per-category detection counts, `.txt`/`.csv` download of the redacted output, and a privacy-safe activity log.
+
+---
+
+## Privacy by Design
+
+- **Zero runtime dependencies** and **no network calls**: all detection, validation, and redaction execute strictly inside browser RAM.
+- **No browser storage:** never writes to `localStorage`, `sessionStorage`, `IndexedDB`, or cookies.
+- **XSS-safe rendering:** user-derived text is rendered exclusively via DOM text nodes (`textContent`), never unsafe `innerHTML`.
+- **Privacy-safe logs:** activity logs record only timestamps, operation types, categories, modes, and aggregate counts—never raw PII.
+- Verified automatically via `npm run lint:privacy` (a static audit in [`test/privacy-audit.js`](./test/privacy-audit.js)).
+
+---
+
+## Run Locally
+
+```powershell
+git clone https://github.com/nikhilkunte645-maker/KAVACH.git
+cd KAVACH
+python -m http.server 8000
+```
+
+Open **http://localhost:8000** in your browser.
+
+> **Note:** Opening `index.html` directly by double-clicking (`file://`) will not work because browser ES modules require an HTTP server.
+
+---
+
+## Scripts & Verification
+
+```powershell
+npm test             # Unit & CSV test suite (node --test test/*.test.js)
+npm run test:self    # 61 built-in self-tests across categories A–K
+npm run typecheck    # TypeScript static type checking (tsc --noEmit)
+npm run lint:privacy # Static privacy & zero-network audit
+npm run build        # Validates & copies production assets to dist/
+```
 
 ---
 
 ## Project Structure
 
-```
-c:\Users\lucifer\Downloads\KAVACH\
-  ├── index.html                  # Standalone client-side web application
-  ├── style.css                   # Cyber-defense UI styling (Liquid Glass, Shiny Buttons)
-  ├── tsconfig.json               # TypeScript configuration for strict type checking
-  ├── package.json                # Project configuration, test scripts, build script
-  ├── .gitignore                  # Git ignore rules
-  ├── src/
-  │   ├── core/
-  │   │   ├── types.js            # PII types, priorities, and validation status enums
-  │   │   ├── luhn.js             # Luhn modulus 10 checksum algorithm
-  │   │   ├── verhoeff.js         # Verhoeff D5 checksum algorithm
-  │   │   ├── detectors.js        # Deterministic candidate boundary detectors
-  │   │   ├── validators.js       # Strict candidate validators
-  │   │   ├── overlap.js          # Half-open interval overlap resolver
-  │   │   ├── redactor.js         # Full mask, partial mask, consistent pseudonymizer
-  │   │   ├── csv-parser.js       # RFC-4180 parser, serializer & formula shield
-  │   │   ├── diff.js             # Safe text diff generator & XSS-inert DOM renderer
-  │   │   ├── logger.js           # Privacy-safe operational logger (zero raw PII)
-  │   │   ├── state.js            # Transient in-memory state manager
-  │   │   └── engine.js           # Main processing engine orchestrator
-  │   ├── self-test/
-  │   │   ├── test-cases.js       # 61 production test cases covering Categories A-K
-  │   │   └── runner.js           # Self-test runner module with live metrics
-  │   └── app.js                  # Main UI controller & DOM event handling
-  ├── test/
-  │   ├── unit.test.js            # Node:test unit test suite (24 tests)
-  │   ├── csv.test.js             # RFC-4180 CSV and formula injection test suite
-  │   ├── privacy-audit.js        # Static privacy & zero-leak network scanner
-  │   └── cli-runner.js           # CLI self-test execution wrapper
-  └── scripts/
-      └── build.js                # Production asset validator & dist builder
+```text
+KAVACH/
+├── assets/
+│   └── kavach-banner.png
+├── components/
+│   └── ui/
+├── lib/
+│   └── utils.ts
+├── scripts/
+│   └── build.js          # Production asset builder (outputs dist/)
+├── src/
+│   ├── app.js            # UI controller & DOM event wiring
+│   ├── core/             # Detectors, validators (Luhn/Verhoeff), overlap, redactor, CSV, diff, logger, state, engine
+│   └── self-test/        # 61 self-test cases & runner
+├── test/                 # Unit tests, CSV tests, CLI self-test runner, privacy audit
+├── index.html
+├── style.css
+├── globals.css
+├── package.json
+├── tsconfig.json
+└── vercel.json
 ```
 
 ---
 
-## Verification & Execution Commands
+## Deployment
 
-```bash
-# 1. Run all unit tests (node:test)
-npm test
-
-# 2. Run built-in self-test suite (61 production tests across Categories A-K)
-npm run test:self
-
-# 3. Run TypeScript static type checking
-npm run typecheck
-
-# 4. Run automated privacy and zero-leak network audit
-npm run lint:privacy
-
-# 5. Run full verification pipeline (typecheck + test + test:self + lint:privacy)
-npm run verify
-
-# 6. Build production distribution
-npm run build
-```
+Configured as a static site on Vercel via [`vercel.json`](./vercel.json):
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist`
 
 ---
 
-## Launching KAVACH
+## Limitations
 
-Because KAVACH contains zero external runtime dependencies and is 100% client-side, you can open `index.html` directly in any modern web browser or serve locally with any static HTTP server:
+Detection is rule-based (regular expressions plus Luhn/Verhoeff checksum validation) and is not guaranteed to be exhaustive for all formats or edge cases. Always review the redacted output before sharing.
 
-```bash
-# Example with Node.js http-server or npx serve:
-npx serve .
-# Or simply double click / open index.html in Chrome, Edge, Firefox, or Safari!
-```
+---
+
+## Author
+
+Created by **[nikhilkunte645-maker](https://github.com/nikhilkunte645-maker)**.
