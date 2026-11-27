@@ -255,7 +255,11 @@ function updateLineNumbers() {
   const origLines = countLines(inputText?.value || '');
   const redLines = countLines(outputText?.value || '');
   const lineCountBadge = document.getElementById('line-count-badge');
-  if (lineCountBadge) lineCountBadge.textContent = `${origLines} lines`;
+  if (lineCountBadge) {
+    lineCountBadge.textContent = origLines > MAX_GUTTER_LINES
+      ? `${origLines} lines (gutter capped at ${MAX_GUTTER_LINES})`
+      : `${origLines} lines`;
+  }
 
   const totalLines = Math.min(Math.max(origLines, redLines, 12), MAX_GUTTER_LINES);
   if (totalLines === lastGutterLines) return;
@@ -386,7 +390,10 @@ export function runProcessing() {
 
     if (findingsCountBadge) findingsCountBadge.textContent = String(csvResult.findings.length);
     if (diffStatusLabel) {
-      diffStatusLabel.textContent = `${csvResult.findings.length} modification${csvResult.findings.length === 1 ? '' : 's'}`;
+      const modText = `${csvResult.findings.length} modification${csvResult.findings.length === 1 ? '' : 's'}`;
+      diffStatusLabel.textContent = text.length > MAX_DIFF_PREVIEW_CHARS
+        ? `${modText} (preview: first ${MAX_DIFF_PREVIEW_CHARS.toLocaleString()} chars)`
+        : modText;
     }
     renderFindingsTable(csvResult.findings);
 
@@ -418,7 +425,15 @@ export function runProcessing() {
         diffSegs.push({ type: 'unchanged', text: '\n' });
       }
     }
-    if (diffOutput) renderSafeDiffToDom(diffOutput, diffSegs);
+    if (diffOutput) {
+      renderSafeDiffToDom(diffOutput, diffSegs);
+      if (text.length > MAX_DIFF_PREVIEW_CHARS) {
+        const truncNote = document.createElement('span');
+        truncNote.className = 'diff-unchanged';
+        truncNote.textContent = `\n… [Diff preview truncated at ${MAX_DIFF_PREVIEW_CHARS.toLocaleString()} characters; full redacted output is in Redacted Output & Export]`;
+        diffOutput.appendChild(truncNote);
+      }
+    }
   } else {
     if (sourceFormatLabel) {
       sourceFormatLabel.textContent = stateManager.sourceType === 'txt'
@@ -441,7 +456,10 @@ export function runProcessing() {
 
     if (findingsCountBadge) findingsCountBadge.textContent = String(textResult.findings.length);
     if (diffStatusLabel) {
-      diffStatusLabel.textContent = `${textResult.findings.length} modification${textResult.findings.length === 1 ? '' : 's'}`;
+      const modText = `${textResult.findings.length} modification${textResult.findings.length === 1 ? '' : 's'}`;
+      diffStatusLabel.textContent = text.length > MAX_DIFF_PREVIEW_CHARS
+        ? `${modText} (preview: first ${MAX_DIFF_PREVIEW_CHARS.toLocaleString()} chars)`
+        : modText;
     }
     renderFindingsTable(textResult.findings);
 
@@ -457,7 +475,15 @@ export function runProcessing() {
       ? textResult.findings.filter((f) => f.end <= MAX_DIFF_PREVIEW_CHARS)
       : textResult.findings;
     const diffSegs = computeDiffSegments(previewRaw, previewFindings);
-    if (diffOutput) renderSafeDiffToDom(diffOutput, diffSegs);
+    if (diffOutput) {
+      renderSafeDiffToDom(diffOutput, diffSegs);
+      if (text.length > MAX_DIFF_PREVIEW_CHARS) {
+        const truncNote = document.createElement('span');
+        truncNote.className = 'diff-unchanged';
+        truncNote.textContent = `\n… [Diff preview truncated at ${MAX_DIFF_PREVIEW_CHARS.toLocaleString()} characters; full redacted output is in Redacted Output & Export]`;
+        diffOutput.appendChild(truncNote);
+      }
+    }
   }
 }
 
@@ -481,9 +507,11 @@ function updateAnalyticsCards(counts, total = 0, luhnRejected = 0) {
 
 /**
  * Safely renders the findings table without raw PII exposure.
+ * Supports incremental expansion beyond MAX_FINDINGS_TABLE_ROWS.
  * @param {Array<any>} findings
+ * @param {number} [maxRows=MAX_FINDINGS_TABLE_ROWS]
  */
-function renderFindingsTable(findings) {
+function renderFindingsTable(findings, maxRows = MAX_FINDINGS_TABLE_ROWS) {
   if (!findingsTbody) return;
   while (findingsTbody.firstChild) {
     findingsTbody.removeChild(findingsTbody.firstChild);
@@ -503,7 +531,7 @@ function renderFindingsTable(findings) {
   }
 
   const fragment = document.createDocumentFragment();
-  const limit = Math.min(findings.length, MAX_FINDINGS_TABLE_ROWS);
+  const limit = Math.min(findings.length, maxRows);
 
   for (let idx = 0; idx < limit; idx++) {
     const f = findings[idx];
@@ -545,14 +573,27 @@ function renderFindingsTable(findings) {
     fragment.appendChild(tr);
   }
 
-  if (findings.length > MAX_FINDINGS_TABLE_ROWS) {
+  if (findings.length > limit) {
     const trMore = document.createElement('tr');
     const tdMore = document.createElement('td');
     tdMore.colSpan = 5;
     tdMore.style.textAlign = 'center';
     tdMore.style.color = 'var(--text-muted)';
     tdMore.style.fontSize = '12px';
-    tdMore.textContent = `Showing first ${MAX_FINDINGS_TABLE_ROWS} of ${findings.length} findings (all ${findings.length} redacted in output).`;
+
+    const infoSpan = document.createElement('span');
+    infoSpan.textContent = `Showing first ${limit} of ${findings.length} findings (all ${findings.length} redacted in output). `;
+    tdMore.appendChild(infoSpan);
+
+    const showMoreBtn = document.createElement('button');
+    showMoreBtn.type = 'button';
+    showMoreBtn.className = 'btn-micro';
+    showMoreBtn.textContent = `Show +${Math.min(MAX_FINDINGS_TABLE_ROWS, findings.length - limit)} more`;
+    showMoreBtn.addEventListener('click', () => {
+      renderFindingsTable(findings, limit + MAX_FINDINGS_TABLE_ROWS);
+    });
+    tdMore.appendChild(showMoreBtn);
+
     trMore.appendChild(tdMore);
     fragment.appendChild(trMore);
   }

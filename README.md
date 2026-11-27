@@ -87,10 +87,11 @@ Open **http://localhost:8000** in your browser.
 ## Scripts & Verification
 
 ```powershell
-npm test             # Unit & CSV test suite (node --test test/*.test.js)
+npm test             # Unit, CSV, integration, a11y & security tests (36 cases)
 npm run test:self    # 61 built-in self-tests across categories A–K
-npm run typecheck    # TypeScript static type checking (tsc --noEmit)
+npm run typecheck    # Strict TypeScript static type checking (tsc --noEmit)
 npm run lint:privacy # Static privacy & zero-network audit
+npm run test:performance # Reproducible 100 KB–5 MB performance benchmarks
 npm run build        # Validates & copies production assets to dist/
 ```
 
