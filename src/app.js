@@ -290,6 +290,7 @@ function initSegmentedControl() {
  * Main processing function triggered on text or configuration change.
  */
 export function runProcessing() {
+  stateManager.pseudonymizer.reset();
   const text = inputText.value;
   if (charCount) charCount.textContent = `${text.length} chars`;
   if (statCharsProcessed) statCharsProcessed.textContent = String(text.length);
