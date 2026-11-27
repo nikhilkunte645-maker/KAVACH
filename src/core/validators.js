@@ -170,19 +170,6 @@ export function validateIpv4(rawValue, sourceText, start, end) {
     };
   }
 
-  // Reject negative first octet (e.g. '-1.2.3.4' or 'Host -1.2.3.4')
-  if (
-    start > 0 &&
-    sourceText[start - 1] === '-' &&
-    (start === 1 || /[\s(,=:[{]/.test(sourceText[start - 2]))
-  ) {
-    return {
-      status: ValidationStatus.REJECTED_OCTET_RANGE,
-      reason: 'Octet 1 is negative',
-      normalizedValue: rawValue
-    };
-  }
-
   const octets = rawValue.split('.');
   if (octets.length !== 4) {
     return {

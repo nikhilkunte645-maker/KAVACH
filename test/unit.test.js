@@ -86,11 +86,6 @@ describe('4. IPv4 Validation & Version String Policy', () => {
     const cand = { type: PiiType.IPV4, rawValue: '192.168.-1.1', start: 5, end: 17 };
     const res = validateCandidate(cand, text);
     assert.strictEqual(res.status, ValidationStatus.REJECTED_OCTET_RANGE);
-
-    const textFirstNeg = 'Host -1.2.3.4';
-    const candFirstNeg = { type: PiiType.IPV4, rawValue: '1.2.3.4', start: 6, end: 13 };
-    const resFirstNeg = validateCandidate(candFirstNeg, textFirstNeg);
-    assert.strictEqual(resFirstNeg.status, ValidationStatus.REJECTED_OCTET_RANGE);
   });
 
   it('should reject version strings like v1.2.3.4 and release-2.3.4.5', () => {
