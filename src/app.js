@@ -1001,15 +1001,22 @@ Status: VERIFIED_LOCAL_ONLY`;
   });
 
   // Toggle Security Docs Secondary Section
-  const toggleDocsBtn = document.getElementById('toggle-docs-btn');
   const tabDocs = document.getElementById('tab-docs');
   const tabBtnDocs = document.getElementById('tab-btn-docs');
 
+  if (tabDocs instanceof HTMLDetailsElement) {
+    tabDocs.addEventListener('toggle', () => {
+      if (tabBtnDocs) {
+        tabBtnDocs.textContent = tabDocs.open ? 'Collapse' : 'Expand';
+      }
+    });
+  }
+
   tabBtnDocs?.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
     if (tabDocs instanceof HTMLDetailsElement) {
       tabDocs.open = !tabDocs.open;
-      tabBtnDocs.textContent = tabDocs.open ? 'Collapse' : 'Expand';
     }
   });
 
