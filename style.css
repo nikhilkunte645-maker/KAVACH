@@ -163,6 +163,54 @@ body::before {
   z-index: 0;
 }
 
+/* Ambient Floating Paths Vector Background */
+.floating-paths-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.28;
+  color: #38bdf8;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85) 30%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85) 30%, transparent 85%);
+}
+
+.floating-paths-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.floating-path-line {
+  stroke-dasharray: 450 900;
+  stroke-dashoffset: 0;
+  animation: float-path-drift 24s linear infinite alternate;
+  will-change: stroke-dashoffset, opacity;
+}
+
+@keyframes float-path-drift {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+  100% {
+    stroke-dashoffset: 550;
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-path-line {
+    animation: none;
+  }
+}
+
 /* Focus ring on all interactive elements */
 :focus-visible {
   outline: none;
