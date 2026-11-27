@@ -291,6 +291,8 @@ export function runProcessing() {
 
   if (!text) {
     outputText.value = '';
+    if (btnExportRedacted) btnExportRedacted.setAttribute('disabled', 'true');
+    if (sourceFormatLabel) sourceFormatLabel.textContent = 'Typed input';
     updateLineNumbers();
     if (diffStatusLabel) diffStatusLabel.textContent = 'No modifications';
     while (diffOutput?.firstChild) diffOutput.removeChild(diffOutput.firstChild);
@@ -331,6 +333,10 @@ export function runProcessing() {
     });
 
     outputText.value = csvResult.redactedCsv;
+    if (btnExportRedacted) {
+      if (outputText.value) btnExportRedacted.removeAttribute('disabled');
+      else btnExportRedacted.setAttribute('disabled', 'true');
+    }
     updateLineNumbers();
 
     if (findingsCountBadge) findingsCountBadge.textContent = String(csvResult.findings.length);
@@ -369,7 +375,11 @@ export function runProcessing() {
     }
     if (diffOutput) renderSafeDiffToDom(diffOutput, diffSegs);
   } else {
-    if (sourceFormatLabel) sourceFormatLabel.textContent = 'Raw Text';
+    if (sourceFormatLabel) {
+      sourceFormatLabel.textContent = stateManager.sourceType === 'txt'
+        ? (stateManager.fileName ? `TXT (${stateManager.fileName})` : 'TXT File')
+        : 'Raw Text';
+    }
     const textResult = processText(text, {
       enabledTypes: config.enabledTypes,
       redactionMode: config.redactionMode,
@@ -378,6 +388,10 @@ export function runProcessing() {
     });
 
     outputText.value = textResult.redactedText;
+    if (btnExportRedacted) {
+      if (outputText.value) btnExportRedacted.removeAttribute('disabled');
+      else btnExportRedacted.setAttribute('disabled', 'true');
+    }
     updateLineNumbers();
 
     if (findingsCountBadge) findingsCountBadge.textContent = String(textResult.findings.length);
@@ -608,6 +622,23 @@ function initFileDropZone() {
  * @param {File} file
  */
 function loadFile(file) {
+  const lowerName = file.name.toLowerCase();
+  const isCsv = lowerName.endsWith('.csv');
+  const isTxt = lowerName.endsWith('.txt');
+  const isAllowedMime = file.type === 'text/plain' || file.type === 'text/csv';
+
+  if (!isCsv && !isTxt && !isAllowedMime) {
+    logger.log({
+      operation: 'FILE_LOAD',
+      category: 'WARNING',
+      status: 'WARNING',
+      details: `Rejected unsupported file type "${file.name}". Only .txt and .csv files are supported.`
+    });
+    if (sourceFormatLabel) sourceFormatLabel.textContent = 'Unsupported file (use .txt or .csv)';
+    if (fileInput) fileInput.value = '';
+    return;
+  }
+
   const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
   if (file.size > MAX_FILE_SIZE) {
     logger.log({
@@ -616,12 +647,12 @@ function loadFile(file) {
       status: 'ERROR',
       details: `File "${file.name}" exceeds 20MB limit (${(file.size / (1024 * 1024)).toFixed(1)} MB). Aborted.`
     });
-    alert(`File exceeds 20MB client memory limit. Please process files under 20MB.`);
+    if (sourceFormatLabel) sourceFormatLabel.textContent = 'File exceeds 20MB limit';
+    if (fileInput) fileInput.value = '';
     return;
   }
 
   const reader = new FileReader();
-  const isCsv = file.name.toLowerCase().endsWith('.csv');
 
   reader.onload = (e) => {
     const content = /** @type {string} */ (e.target?.result || '');
@@ -636,6 +667,7 @@ function loadFile(file) {
       status: 'SUCCESS',
       details: `File read locally "${file.name}" (${(file.size / 1024).toFixed(1)} KB) into memory.`
     });
+    if (fileInput) fileInput.value = '';
   };
 
   reader.readAsText(file, 'utf-8');
