@@ -84,7 +84,7 @@ function updateGlassLens(activeBtn) {
 
   if (parentRect) {
     const offsetLeft = btnRect.left - parentRect.left;
-    glassLens.style.transform = `translateX(${offsetLeft - 4}px)`;
+    glassLens.style.transform = `translateX(${offsetLeft - 2}px)`;
     glassLens.style.width = `${btnRect.width}px`;
   }
 }

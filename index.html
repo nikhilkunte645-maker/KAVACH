@@ -8,17 +8,14 @@
 </head>
 <body>
 
-  <!-- Ambient Subtle Background Illumination -->
-  <div class="ambient-glow" aria-hidden="true"></div>
-
-  <!-- Header -->
+  <!-- 1. Header (48px compact) -->
   <header class="kavach-header">
     <div class="brand-section">
       <div class="brand-title">
         <span class="shield-icon" aria-hidden="true">🛡️</span>
         <span>KAVACH</span>
       </div>
-      <span class="brand-badge">ZERO-LEAK MEMORY</span>
+      <span class="brand-badge">ZERO-LEAK RAM</span>
     </div>
 
     <!-- Liquid Glass Tab Bar Navigation -->
@@ -50,19 +47,16 @@
     </div>
   </header>
 
-  <!-- Compact Security Hero Section -->
+  <!-- 2. Ultra-Compact Security Hero Bar (38px compact) -->
   <section class="kavach-hero">
-    <div class="kavach-grid-backdrop" aria-hidden="true"></div>
     <div class="hero-content">
-      <div class="hero-title-row">
-        <h1 class="hero-title">Your data stays yours.</h1>
-        <span class="brand-badge">OFFLINE VERIFIED</span>
-      </div>
-      <p class="hero-subtitle">Deterministic Client-Side PII Redactor & Privacy Engine</p>
-      <p class="hero-desc">
-        100% in-browser RAM execution. All detection, mathematical checksum validation (Luhn, Verhoeff),
-        overlap resolution, and RFC-4180 CSV processing occur locally. Zero cloud transmission, zero telemetry, zero storage.
-      </p>
+      <span class="hero-title">
+        <span>🛡️</span>
+        <span>Your data stays yours.</span>
+      </span>
+      <span class="hero-desc">
+        100% in-browser RAM execution. Deterministic checksums (Luhn, Verhoeff), RFC-4180 CSV, zero cloud transmission.
+      </span>
     </div>
     <div class="hero-actions">
       <button id="hero-btn-redact" class="btn btn-shiny">
@@ -70,19 +64,19 @@
         <span>→</span>
       </button>
       <button id="hero-btn-selftest" class="btn btn-outline-cyan">
-        <span>Run Security Self-Test</span>
+        <span>Run Self-Test (61)</span>
       </button>
     </div>
   </section>
 
-  <!-- Main Viewports -->
+  <!-- 3. Main Viewports -->
   <main class="app-container">
 
     <!-- 1. WORKSPACE VIEW (REDACT) -->
     <div id="tab-workspace" class="tab-pane active" role="tabpanel" aria-labelledby="tab-btn-workspace">
       <div class="workspace-container">
 
-        <!-- Sidebar Configuration -->
+        <!-- Compact Settings Sidebar (260px width, Top-Aligned) -->
         <aside class="config-sidebar" aria-label="Detection Configuration">
 
           <!-- Detector Selection -->
@@ -178,35 +172,37 @@
 
         </aside>
 
-        <!-- Main Workspace Area -->
+        <!-- Main Redaction Workspace Area (Immediately Visible Above The Fold) -->
         <section class="workspace-main" aria-label="Redaction Workspace">
 
-          <!-- Drop Zone -->
-          <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Upload File">
-            <div class="drop-zone-icon">📁</div>
-            <div class="drop-zone-text"><strong>Drag & Drop .txt or .csv files here</strong>, or click to browse</div>
-            <div class="drop-zone-subtext">100% Client-side. File contents never leave transient browser memory. (Max 20MB)</div>
-            <input type="file" id="file-input" accept=".txt,.csv,text/plain,text/csv" style="display: none;">
-          </div>
+          <!-- Slim Workspace Toolbar -->
+          <div class="workspace-toolbar">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div id="drop-zone" class="compact-drop-zone" tabindex="0" role="button" aria-label="Upload File">
+                <span>📁</span>
+                <span>Upload .txt / .csv</span>
+                <input type="file" id="file-input" accept=".txt,.csv,text/plain,text/csv" style="display: none;">
+              </div>
+              <button id="btn-load-sample" class="btn btn-secondary" style="height: 32px;">
+                <span>⚡ Load Sample PII</span>
+              </button>
+            </div>
 
-          <!-- Quick Tools Bar -->
-          <div class="quick-tools-bar">
-            <button id="btn-load-sample" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;">
-              <span>⚡ Load Sample PII Data</span>
-            </button>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">
-              Format: <span id="source-format-label" style="color: var(--accent-cyan); font-weight: 600;">Raw Text</span>
-              &nbsp;|&nbsp;
-              Length: <span id="char-count" style="color: var(--text-primary); font-family: var(--font-mono);">0 chars</span>
+            <div class="toolbar-info">
+              <span>Format: <strong id="source-format-label" class="status-pill">Raw Text</strong></span>
+              <span>Length: <strong id="char-count" style="font-family: var(--font-mono); color: var(--text-primary);">0 chars</strong></span>
             </div>
           </div>
 
-          <!-- Dual Editor Grid -->
+          <!-- Dual Editor Panels (Equal 1fr 1fr Grid) -->
           <div class="editors-grid">
             <div class="editor-card">
               <div class="editor-header">
-                <span class="editor-title">Source Input</span>
-                <button id="btn-clear-input" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Clear</button>
+                <span class="editor-title">
+                  <span>📝</span>
+                  <span>Source Input</span>
+                </span>
+                <button id="btn-clear-input" class="btn btn-secondary" style="height: 22px; padding: 0.1rem 0.5rem; font-size: 0.7rem;">Clear</button>
               </div>
               <textarea id="input-text" class="editor-textarea" placeholder="Paste sensitive text or CSV here...
 Example:
@@ -215,48 +211,58 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
 
             <div class="editor-card">
               <div class="editor-header">
-                <span class="editor-title">Redacted Output</span>
-                <button id="btn-copy-output" class="btn btn-shiny" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">Copy</button>
+                <span class="editor-title">
+                  <span>🔒</span>
+                  <span>Redacted Output</span>
+                </span>
+                <div style="display: flex; gap: 0.35rem;">
+                  <button id="btn-copy-output" class="btn btn-shiny" style="height: 22px; padding: 0.1rem 0.55rem; font-size: 0.7rem;">Copy</button>
+                </div>
               </div>
               <textarea id="output-text" class="editor-textarea" readonly placeholder="Redacted output will appear here automatically..."></textarea>
             </div>
           </div>
 
-          <!-- Safe Diff View -->
-          <div class="table-card">
-            <div class="table-header">
-              <h3 style="font-size: 0.85rem; font-weight: 700;">Safe Visual Diff (XSS-Inert DOM Text Nodes)</h3>
-              <span id="diff-status-label" style="font-size: 0.75rem; color: var(--text-muted);">No modifications</span>
-            </div>
-            <div id="diff-output" class="diff-container">
-              <span class="diff-unchanged">Input text above to see side-by-side safe redaction diff...</span>
-            </div>
-          </div>
+          <!-- Bottom Split Inspectors (Diff View & Findings Table) -->
+          <div class="inspectors-grid">
 
-          <!-- Findings Table -->
-          <div class="table-card">
-            <div class="table-header">
-              <h3 style="font-size: 0.85rem; font-weight: 700;">Detected Findings (<span id="findings-count-badge" style="color: var(--accent-cyan);">0</span>)</h3>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">Resolved non-overlapping spans [start, end)</span>
+            <!-- Safe Visual Diff -->
+            <div class="inspector-card">
+              <div class="inspector-header">
+                <span class="inspector-title">Safe Visual Diff (XSS-Inert TextNodes)</span>
+                <span id="diff-status-label" style="font-size: 0.7rem; color: var(--text-muted);">No modifications</span>
+              </div>
+              <div id="diff-output" class="diff-container">
+                <span class="diff-unchanged">Input text above to see side-by-side safe redaction diff...</span>
+              </div>
             </div>
-            <div style="overflow-x: auto; max-height: 260px;">
-              <table class="findings-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Type</th>
-                    <th>Span [Start, End)</th>
-                    <th>Status</th>
-                    <th>Redacted Representation</th>
-                  </tr>
-                </thead>
-                <tbody id="findings-tbody">
-                  <tr>
-                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No PII findings detected in current input.</td>
-                  </tr>
-                </tbody>
-              </table>
+
+            <!-- Detected Findings Table -->
+            <div class="inspector-card">
+              <div class="inspector-header">
+                <span class="inspector-title">Detected Findings (<span id="findings-count-badge" style="color: var(--accent-cyan);">0</span>)</span>
+                <span style="font-size: 0.7rem; color: var(--text-muted);">Resolved spans [start, end)</span>
+              </div>
+              <div class="table-scroll-container">
+                <table class="findings-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Type</th>
+                      <th>Span [Start, End)</th>
+                      <th>Status</th>
+                      <th>Redacted Value</th>
+                    </tr>
+                  </thead>
+                  <tbody id="findings-tbody">
+                    <tr>
+                      <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1rem;">No PII findings detected in current input.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+
           </div>
 
         </section>
@@ -267,11 +273,11 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
     <!-- 2. ANALYTICS & LOGS VIEW -->
     <div id="tab-analytics" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-analytics">
       <div class="analytics-container">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="pane-header-row">
           <div>
-            <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff;">Privacy Analytics & Operational Telemetry</h2>
-            <p style="color: var(--text-secondary); font-size: 0.875rem;">
-              Safe, non-sensitive execution metrics and local transient audit logs. Never records raw PII.
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff;">Privacy Analytics & Operational Telemetry</h2>
+            <p style="color: var(--text-secondary); font-size: 0.8rem;">
+              Non-sensitive execution metrics and local transient audit logs. Zero raw PII recorded.
             </p>
           </div>
           <div style="display: flex; gap: 0.5rem;">
@@ -318,10 +324,10 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
         </div>
 
         <!-- Log Terminal -->
-        <div class="table-card">
-          <div class="table-header">
-            <span style="font-weight: 700; font-size: 0.85rem;">Local Transient Activity Log</span>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">Buffered in JavaScript heap memory (Max 500 entries)</span>
+        <div class="inspector-card" style="flex: 1; min-height: 240px;">
+          <div class="inspector-header">
+            <span class="inspector-title">Local Transient Activity Log</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted);">Buffered in JavaScript heap memory (Max 500 entries)</span>
           </div>
           <div class="log-terminal" id="log-terminal" role="log" aria-live="polite">
             <!-- Real-time log entries inserted here -->
@@ -335,14 +341,14 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
     <div id="tab-selftest" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-selftest">
       <div class="self-test-container">
 
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+        <div class="pane-header-row">
           <div>
-            <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff;">Automated Verification Suite</h2>
-            <p style="color: var(--text-secondary); font-size: 0.875rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff;">Automated Verification Suite</h2>
+            <p style="color: var(--text-secondary); font-size: 0.8rem;">
               Directly executes production detection, Luhn/Verhoeff checksums, RFC-4180 CSV, and privacy logic (Categories A through K).
             </p>
           </div>
-          <button id="btn-run-tests" class="btn btn-shiny" style="padding: 0.75rem 1.75rem;">
+          <button id="btn-run-tests" class="btn btn-shiny" style="padding: 0.5rem 1.25rem;">
             <span>▶ Run All 61 Self-Tests</span>
           </button>
         </div>
@@ -369,12 +375,12 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
 
         <!-- Test Results Card -->
         <div class="test-list-card">
-          <div class="table-header">
-            <span style="font-weight: 700; font-size: 0.85rem;">Test Verification Checklist (Categories A through K)</span>
-            <span id="test-runner-status" style="font-size: 0.8rem; color: var(--text-muted);">Ready to execute</span>
+          <div class="inspector-header">
+            <span class="inspector-title">Test Verification Checklist (Categories A through K)</span>
+            <span id="test-runner-status" style="font-size: 0.75rem; color: var(--text-muted);">Ready to execute</span>
           </div>
-          <div id="test-results-list" style="max-height: 520px; overflow-y: auto;">
-            <div style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+          <div class="test-scroll-area" id="test-results-list">
+            <div style="padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
               Click <strong>"Run All 61 Self-Tests"</strong> to execute the full deterministic verification suite.
             </div>
           </div>
