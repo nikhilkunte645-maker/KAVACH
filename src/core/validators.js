@@ -73,7 +73,7 @@ export function validateCreditCard(rawValue, sourceText, start, end) {
   // Check boundaries: cannot be adjacent to digits or alphanumeric
   if (!isSafeWordBoundary(sourceText, start, end, /[0-9A-Za-z]/)) {
     return {
-      status: ValidationStatus.REJECTED_BOUNDARY,
+      status: ValidationStatus.INVALID_BOUNDARY,
       reason: 'Credit card candidate is adjacent to digits or alphanumeric characters',
       normalizedValue: rawValue
     };
@@ -84,7 +84,7 @@ export function validateCreditCard(rawValue, sourceText, start, end) {
 
   if (digitsOnly.length < 13 || digitsOnly.length > 19) {
     return {
-      status: ValidationStatus.REJECTED_LENGTH,
+      status: ValidationStatus.INVALID_LENGTH,
       reason: `Length must be between 13 and 19 digits (got ${digitsOnly.length})`,
       normalizedValue: digitsOnly
     };
@@ -94,7 +94,7 @@ export function validateCreditCard(rawValue, sourceText, start, end) {
   const luhnPass = validateLuhn(digitsOnly);
   if (!luhnPass) {
     return {
-      status: ValidationStatus.REJECTED_LUHN,
+      status: ValidationStatus.INVALID_LUHN,
       reason: 'Failed Luhn modulus 10 checksum',
       normalizedValue: digitsOnly
     };
@@ -120,7 +120,7 @@ export function validatePan(rawValue, sourceText, start, end) {
   // Boundary check: must not be part of longer alphanumeric word
   if (!isSafeWordBoundary(sourceText, start, end, /[a-zA-Z0-9]/)) {
     return {
-      status: ValidationStatus.REJECTED_BOUNDARY,
+      status: ValidationStatus.INVALID_BOUNDARY,
       reason: 'PAN candidate is part of a longer alphanumeric identifier',
       normalizedValue: rawValue.toUpperCase()
     };
@@ -155,7 +155,7 @@ export function validateIpv4(rawValue, sourceText, start, end) {
   // Check if preceded or followed by dots or digits
   if (!isSafeWordBoundary(sourceText, start, end, /[0-9.]/)) {
     return {
-      status: ValidationStatus.REJECTED_BOUNDARY,
+      status: ValidationStatus.INVALID_BOUNDARY,
       reason: 'IPv4 candidate is adjacent to numbers or dots',
       normalizedValue: rawValue
     };
@@ -189,6 +189,16 @@ export function validateIpv4(rawValue, sourceText, start, end) {
         normalizedValue: rawValue
       };
     }
+
+    // Explicit check for negative octet or non-numeric characters
+    if (octetStr.startsWith('-') || !/^\d+$/.test(octetStr)) {
+      return {
+        status: ValidationStatus.REJECTED_OCTET_RANGE,
+        reason: `Octet ${i + 1} (${octetStr}) is invalid or negative`,
+        normalizedValue: rawValue
+      };
+    }
+
     // Check leading zeros (e.g. 01 vs 0)
     if (octetStr.length > 1 && octetStr.startsWith('0')) {
       return {
@@ -197,6 +207,7 @@ export function validateIpv4(rawValue, sourceText, start, end) {
         normalizedValue: rawValue
       };
     }
+
     const val = Number(octetStr);
     if (Number.isNaN(val) || val < 0 || val > 255) {
       return {
@@ -228,7 +239,7 @@ export function validateAadhaar(rawValue, sourceText, start, end, requireVerhoef
   // Boundary check: cannot be adjacent to digits or alphanumeric
   if (!isSafeWordBoundary(sourceText, start, end, /[0-9A-Za-z]/)) {
     return {
-      status: ValidationStatus.REJECTED_BOUNDARY,
+      status: ValidationStatus.INVALID_BOUNDARY,
       reason: 'Aadhaar candidate is adjacent to alphanumeric characters',
       normalizedValue: rawValue
     };
@@ -238,7 +249,7 @@ export function validateAadhaar(rawValue, sourceText, start, end, requireVerhoef
 
   if (digitsOnly.length !== 12) {
     return {
-      status: ValidationStatus.REJECTED_LENGTH,
+      status: ValidationStatus.INVALID_LENGTH,
       reason: `Aadhaar must be exactly 12 digits (found ${digitsOnly.length})`,
       normalizedValue: digitsOnly
     };
@@ -284,7 +295,7 @@ export function validateIndianPhone(rawValue, sourceText, start, end) {
   // Boundary check
   if (!isSafeWordBoundary(sourceText, start, end, /[0-9A-Za-z]/)) {
     return {
-      status: ValidationStatus.REJECTED_BOUNDARY,
+      status: ValidationStatus.INVALID_BOUNDARY,
       reason: 'Phone candidate is adjacent to alphanumeric characters',
       normalizedValue: rawValue
     };
@@ -311,7 +322,7 @@ export function validateIndianPhone(rawValue, sourceText, start, end) {
 
   if (digits.length !== 10) {
     return {
-      status: ValidationStatus.REJECTED_LENGTH,
+      status: ValidationStatus.INVALID_LENGTH,
       reason: `Indian mobile number must be 10 digits (found ${digits.length})`,
       normalizedValue: digits
     };
@@ -343,7 +354,7 @@ export function validateIndianPhone(rawValue, sourceText, start, end) {
 export function validateInternationalPhone(rawValue, sourceText, start, end) {
   if (!isSafeWordBoundary(sourceText, start, end, /[0-9A-Za-z]/)) {
     return {
-      status: ValidationStatus.REJECTED_BOUNDARY,
+      status: ValidationStatus.INVALID_BOUNDARY,
       reason: 'International phone candidate is adjacent to alphanumeric characters',
       normalizedValue: rawValue
     };
@@ -369,7 +380,7 @@ export function validateInternationalPhone(rawValue, sourceText, start, end) {
   const digits = rawValue.replace(/\D/g, '');
   if (digits.length < 8 || digits.length > 15) {
     return {
-      status: ValidationStatus.REJECTED_LENGTH,
+      status: ValidationStatus.INVALID_LENGTH,
       reason: `E.164 phone length must be 8-15 digits (found ${digits.length})`,
       normalizedValue: digits
     };
@@ -405,7 +416,7 @@ export function validateEmail(rawValue, sourceText, start, end) {
   // Local-part checks
   if (!localPart || localPart.length > 64) {
     return {
-      status: ValidationStatus.REJECTED_LENGTH,
+      status: ValidationStatus.INVALID_LENGTH,
       reason: 'Email local-part must be 1-64 characters',
       normalizedValue: rawValue
     };
@@ -422,7 +433,7 @@ export function validateEmail(rawValue, sourceText, start, end) {
   // Domain checks
   if (!domain || domain.length > 253) {
     return {
-      status: ValidationStatus.REJECTED_LENGTH,
+      status: ValidationStatus.INVALID_LENGTH,
       reason: 'Email domain must be 1-253 characters',
       normalizedValue: rawValue
     };

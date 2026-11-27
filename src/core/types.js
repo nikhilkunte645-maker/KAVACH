@@ -15,13 +15,17 @@ export const PiiType = Object.freeze({
 
 export const ValidationStatus = Object.freeze({
   VALID: 'VALID',
+  VALID_CARD: 'VALID_CARD',
   INVALID: 'INVALID',
-  REJECTED_LUHN: 'REJECTED_LUHN',
+  INVALID_LUHN: 'INVALID_LUHN',
+  INVALID_LENGTH: 'INVALID_LENGTH',
+  INVALID_BOUNDARY: 'INVALID_BOUNDARY',
+  REJECTED_LUHN: 'INVALID_LUHN',
   REJECTED_VERHOEFF: 'REJECTED_VERHOEFF',
-  REJECTED_BOUNDARY: 'REJECTED_BOUNDARY',
+  REJECTED_BOUNDARY: 'INVALID_BOUNDARY',
   REJECTED_OCTET_RANGE: 'REJECTED_OCTET_RANGE',
   REJECTED_VERSION_STRING: 'REJECTED_VERSION_STRING',
-  REJECTED_LENGTH: 'REJECTED_LENGTH',
+  REJECTED_LENGTH: 'INVALID_LENGTH',
   REJECTED_FORMAT: 'REJECTED_FORMAT'
 });
 
@@ -58,4 +62,5 @@ export const PII_PRIORITY = Object.freeze({
  * @property {string} status - ValidationStatus
  * @property {string} [reason] - Validation explanation
  * @property {string} [redactedValue] - Masked or pseudonymized replacement
+ * @property {{row: number, col: number}} [cellCoord] - Coordinates if inside CSV
  */

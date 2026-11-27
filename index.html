@@ -8,51 +8,85 @@
 </head>
 <body>
 
+  <!-- Ambient Subtle Background Illumination -->
+  <div class="ambient-glow" aria-hidden="true"></div>
+
   <!-- Header -->
   <header class="kavach-header">
     <div class="brand-section">
       <div class="brand-title">
-        <span>🛡️ KAVACH</span>
+        <span class="shield-icon" aria-hidden="true">🛡️</span>
+        <span>KAVACH</span>
       </div>
-      <span class="brand-badge">ZERO-LEAK CLIENT MEMORY</span>
+      <span class="brand-badge">ZERO-LEAK MEMORY</span>
     </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="nav-tabs" role="tablist">
-      <button class="nav-tab-btn active" data-tab="tab-workspace" role="tab" aria-selected="true">
-        <span>Workspace</span>
+    <!-- Liquid Glass Tab Bar Navigation -->
+    <nav class="liquid-glass-container" role="tablist" aria-label="Main Navigation">
+      <div class="glass-lens" id="glass-lens" aria-hidden="true"></div>
+      <button class="liquid-tab-btn active" data-tab="tab-workspace" role="tab" aria-selected="true" id="tab-btn-workspace" tabindex="0">
+        <span class="tab-icon">🛡️</span>
+        <span>Redact</span>
       </button>
-      <button class="nav-tab-btn" data-tab="tab-selftest" role="tab" aria-selected="false">
+      <button class="liquid-tab-btn" data-tab="tab-analytics" role="tab" aria-selected="false" id="tab-btn-analytics" tabindex="-1">
+        <span class="tab-icon">📊</span>
+        <span>Analytics & Logs</span>
+      </button>
+      <button class="liquid-tab-btn" data-tab="tab-selftest" role="tab" aria-selected="false" id="tab-btn-selftest" tabindex="-1">
+        <span class="tab-icon">🧪</span>
         <span>Self-Test Runner</span>
       </button>
-      <button class="nav-tab-btn" data-tab="tab-logs" role="tab" aria-selected="false">
-        <span>Safe Activity Logs</span>
-      </button>
-      <button class="nav-tab-btn" data-tab="tab-docs" role="tab" aria-selected="false">
+      <button class="liquid-tab-btn" data-tab="tab-docs" role="tab" aria-selected="false" id="tab-btn-docs" tabindex="-1">
+        <span class="tab-icon">📖</span>
         <span>Security Spec</span>
       </button>
     </nav>
 
     <!-- Header Actions -->
     <div class="header-actions">
-      <button id="btn-reset" class="btn btn-danger" title="Wipes transient memory and resets state">
+      <button id="btn-reset" class="btn btn-danger" title="Wipes transient memory and resets application state">
         <span>Reset / Wipe</span>
       </button>
     </div>
   </header>
 
+  <!-- Compact Security Hero Section -->
+  <section class="kavach-hero">
+    <div class="hero-content">
+      <div class="hero-title-row">
+        <h1 class="hero-title">Your data stays yours.</h1>
+        <span class="brand-badge">OFFLINE VERIFIED</span>
+      </div>
+      <p class="hero-subtitle">Deterministic Client-Side PII Redactor & Privacy Engine</p>
+      <p class="hero-desc">
+        100% in-browser RAM execution. All detection, mathematical checksum validation (Luhn, Verhoeff),
+        overlap resolution, and RFC-4180 CSV processing occur locally. Zero cloud transmission, zero telemetry, zero storage.
+      </p>
+    </div>
+    <div class="hero-actions">
+      <button id="hero-btn-redact" class="btn btn-shiny">
+        <span>Start Redacting</span>
+        <span>→</span>
+      </button>
+      <button id="hero-btn-selftest" class="btn btn-outline-cyan">
+        <span>Run Security Self-Test</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Viewports -->
   <main class="app-container">
 
-    <!-- 1. WORKSPACE TAB -->
-    <div id="tab-workspace" class="tab-pane active" role="tabpanel">
+    <!-- 1. WORKSPACE VIEW (REDACT) -->
+    <div id="tab-workspace" class="tab-pane active" role="tabpanel" aria-labelledby="tab-btn-workspace">
       <div class="workspace-container">
 
         <!-- Sidebar Configuration -->
-        <aside class="config-sidebar">
+        <aside class="config-sidebar" aria-label="Detection Configuration">
 
           <!-- Detector Selection -->
           <div class="sidebar-section">
-            <h3 class="section-title">Active PII Detectors</h3>
+            <h2 class="section-title">Active PII Detectors</h2>
             <div class="control-group">
               <label class="toggle-label">
                 <span>Credit Cards (13-19 digits, Luhn)</span>
@@ -67,7 +101,7 @@
                 <input type="checkbox" id="det-aadhaar" checked>
               </label>
               <label class="toggle-label">
-                <span>IPv4 (Octet boundaries, Non-version)</span>
+                <span>IPv4 (Octets 0-255, Non-version)</span>
                 <input type="checkbox" id="det-ipv4" checked>
               </label>
               <label class="toggle-label">
@@ -87,7 +121,7 @@
 
           <!-- Redaction Mode Selection -->
           <div class="sidebar-section">
-            <h3 class="section-title">Redaction Mode</h3>
+            <h2 class="section-title">Redaction Mode</h2>
             <div class="radio-group">
               <label class="radio-label">
                 <input type="radio" name="redaction-mode" value="FULL_MASK" checked>
@@ -100,14 +134,14 @@
                 <input type="radio" name="redaction-mode" value="PARTIAL_MASK">
                 <div>
                   <strong>Partial Mask</strong>
-                  <span class="radio-desc">Reveal only safe tails (e.g. ****1234)</span>
+                  <span class="radio-desc">Safe tails only (e.g. u***@e******.com, ****1234)</span>
                 </div>
               </label>
               <label class="radio-label">
                 <input type="radio" name="redaction-mode" value="PSEUDONYMIZE">
                 <div>
                   <strong>Consistent Pseudonymization</strong>
-                  <span class="radio-desc">Deterministic tokens (EMAIL_01, CARD_01)</span>
+                  <span class="radio-desc">Deterministic run-tokens (EMAIL_01, CARD_01)</span>
                 </div>
               </label>
             </div>
@@ -115,7 +149,7 @@
 
           <!-- Security Hardening Options -->
           <div class="sidebar-section">
-            <h3 class="section-title">Security Hardening</h3>
+            <h2 class="section-title">Security Policies</h2>
             <div class="control-group">
               <label class="toggle-label" title="Prefix cells starting with =, +, -, @ with single quote">
                 <span>CSV Formula Injection Shield</span>
@@ -128,11 +162,11 @@
             </div>
           </div>
 
-          <!-- Export Actions -->
+          <!-- Safe Export Actions -->
           <div class="sidebar-section">
-            <h3 class="section-title">Safe Export</h3>
+            <h2 class="section-title">Safe Export</h2>
             <div class="control-group">
-              <button id="btn-export-redacted" class="btn btn-primary">
+              <button id="btn-export-redacted" class="btn btn-shiny">
                 <span>Download Redacted File</span>
               </button>
               <button id="btn-export-logs" class="btn btn-secondary">
@@ -144,31 +178,44 @@
         </aside>
 
         <!-- Main Workspace Area -->
-        <section class="workspace-main">
+        <section class="workspace-main" aria-label="Redaction Workspace">
 
           <!-- Drop Zone -->
-          <div id="drop-zone" class="drop-zone">
+          <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Upload File">
             <div class="drop-zone-icon">📁</div>
             <div class="drop-zone-text"><strong>Drag & Drop .txt or .csv files here</strong>, or click to browse</div>
-            <div class="drop-zone-subtext">100% Client-side. File data never leaves browser transient memory.</div>
+            <div class="drop-zone-subtext">100% Client-side. File contents never leave transient browser memory. (Max 20MB)</div>
             <input type="file" id="file-input" accept=".txt,.csv,text/plain,text/csv" style="display: none;">
+          </div>
+
+          <!-- Quick Tools Bar -->
+          <div class="quick-tools-bar">
+            <button id="btn-load-sample" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;">
+              <span>⚡ Load Sample PII Data</span>
+            </button>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              Format: <span id="source-format-label" style="color: var(--accent-cyan); font-weight: 600;">Raw Text</span>
+              &nbsp;|&nbsp;
+              Length: <span id="char-count" style="color: var(--text-primary); font-family: var(--font-mono);">0 chars</span>
+            </div>
           </div>
 
           <!-- Dual Editor Grid -->
           <div class="editors-grid">
             <div class="editor-card">
               <div class="editor-header">
-                <span class="editor-title">Source Input (<span id="source-format-label">Raw Text</span>)</span>
-                <span id="char-count" style="font-size: 0.75rem; color: var(--text-muted);">0 chars</span>
+                <span class="editor-title">Source Input</span>
+                <button id="btn-clear-input" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Clear</button>
               </div>
-              <textarea id="input-text" class="editor-textarea" placeholder="Paste sensitive text or CSV here... Example:
-Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></textarea>
+              <textarea id="input-text" class="editor-textarea" placeholder="Paste sensitive text or CSV here...
+Example:
+Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +91 9876543210"></textarea>
             </div>
 
             <div class="editor-card">
               <div class="editor-header">
                 <span class="editor-title">Redacted Output</span>
-                <button id="btn-copy-output" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Copy</button>
+                <button id="btn-copy-output" class="btn btn-shiny" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">Copy</button>
               </div>
               <textarea id="output-text" class="editor-textarea" readonly placeholder="Redacted output will appear here automatically..."></textarea>
             </div>
@@ -177,7 +224,7 @@ Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></tex
           <!-- Safe Diff View -->
           <div class="table-card">
             <div class="table-header">
-              <h4 style="font-size: 0.85rem; font-weight: 600;">Safe Visual Diff (XSS-Inert)</h4>
+              <h3 style="font-size: 0.85rem; font-weight: 700;">Safe Visual Diff (XSS-Inert DOM Text Nodes)</h3>
               <span id="diff-status-label" style="font-size: 0.75rem; color: var(--text-muted);">No modifications</span>
             </div>
             <div id="diff-output" class="diff-container">
@@ -188,10 +235,10 @@ Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></tex
           <!-- Findings Table -->
           <div class="table-card">
             <div class="table-header">
-              <h4 style="font-size: 0.85rem; font-weight: 600;">Detected Findings (<span id="findings-count-badge">0</span>)</h4>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">Resolved non-overlapping spans</span>
+              <h3 style="font-size: 0.85rem; font-weight: 700;">Detected Findings (<span id="findings-count-badge" style="color: var(--accent-cyan);">0</span>)</h3>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Resolved non-overlapping spans [start, end)</span>
             </div>
-            <div style="overflow-x: auto; max-height: 240px;">
+            <div style="overflow-x: auto; max-height: 260px;">
               <table class="findings-table">
                 <thead>
                   <tr>
@@ -199,7 +246,7 @@ Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></tex
                     <th>Type</th>
                     <th>Span [Start, End)</th>
                     <th>Status</th>
-                    <th>Masked Value</th>
+                    <th>Redacted Representation</th>
                   </tr>
                 </thead>
                 <tbody id="findings-tbody">
@@ -216,19 +263,86 @@ Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></tex
       </div>
     </div>
 
-    <!-- 2. BUILT-IN SELF-TEST RUNNER TAB -->
-    <div id="tab-selftest" class="tab-pane" role="tabpanel">
-      <div class="self-test-container">
-
+    <!-- 2. ANALYTICS & LOGS VIEW -->
+    <div id="tab-analytics" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-analytics">
+      <div class="analytics-container">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <h2 style="font-size: 1.5rem; font-weight: 700;">Built-In Automated Self-Test Runner</h2>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff;">Privacy Analytics & Operational Telemetry</h2>
             <p style="color: var(--text-secondary); font-size: 0.875rem;">
-              Directly executes the actual production detection, validation, redaction, and CSV logic.
+              Safe, non-sensitive execution metrics and local transient audit logs. Never records raw PII.
             </p>
           </div>
-          <button id="btn-run-tests" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
-            <span>▶ Run All Self-Tests</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btn-clear-logs" class="btn btn-secondary">Clear Logs</button>
+            <button id="btn-export-logs-pane" class="btn btn-shiny">Export JSON Log</button>
+          </div>
+        </div>
+
+        <!-- Analytics Cards -->
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <span class="analytics-card-title">Entity Distribution</span>
+            <div class="analytics-card-content" id="analytics-distribution">
+              <div class="stat-row"><span>Credit Cards:</span><strong id="stat-cards">0</strong></div>
+              <div class="stat-row"><span>PAN Identifiers:</span><strong id="stat-pan">0</strong></div>
+              <div class="stat-row"><span>Aadhaar Numbers:</span><strong id="stat-aadhaar">0</strong></div>
+              <div class="stat-row"><span>IPv4 Addresses:</span><strong id="stat-ipv4">0</strong></div>
+              <div class="stat-row"><span>Phone Numbers:</span><strong id="stat-phone">0</strong></div>
+              <div class="stat-row"><span>Email Addresses:</span><strong id="stat-email">0</strong></div>
+            </div>
+          </div>
+
+          <div class="analytics-card">
+            <span class="analytics-card-title">Session Telemetry</span>
+            <div class="analytics-card-content">
+              <div class="stat-row"><span>Total Entities Masked:</span><strong id="stat-total-masked" style="color: var(--accent-cyan);">0</strong></div>
+              <div class="stat-row"><span>Characters Processed:</span><strong id="stat-chars-processed">0</strong></div>
+              <div class="stat-row"><span>Current Execution Mode:</span><strong id="stat-active-mode" style="color: var(--accent-emerald);">FULL MASK</strong></div>
+              <div class="stat-row"><span>Pseudonym Namespace:</span><strong>Active (Run-Scoped)</strong></div>
+              <div class="stat-row"><span>Storage Mode:</span><strong style="color: var(--accent-emerald);">0% Persistent (RAM Only)</strong></div>
+            </div>
+          </div>
+
+          <div class="analytics-card">
+            <span class="analytics-card-title">Integrity Verification</span>
+            <div class="analytics-card-content">
+              <div class="stat-row"><span>Outbound Network Calls:</span><strong style="color: var(--accent-emerald);">0 (Verified)</strong></div>
+              <div class="stat-row"><span>DOM Injection Safety:</span><strong style="color: var(--accent-emerald);">XSS-Immune (TextNodes)</strong></div>
+              <div class="stat-row"><span>CSV Parser:</span><strong style="color: var(--accent-cyan);">RFC-4180 State Machine</strong></div>
+              <div class="stat-row"><span>Formula Injection Defense:</span><strong style="color: var(--accent-emerald);">Enabled (')</strong></div>
+              <div class="stat-row"><span>Aadhaar Checksum:</span><strong style="color: var(--accent-cyan);">Verhoeff D5 Checksum</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Log Terminal -->
+        <div class="table-card">
+          <div class="table-header">
+            <span style="font-weight: 700; font-size: 0.85rem;">Local Transient Activity Log</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Buffered in JavaScript heap memory (Max 500 entries)</span>
+          </div>
+          <div class="log-terminal" id="log-terminal" role="log" aria-live="polite">
+            <!-- Real-time log entries inserted here -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. BUILT-IN SELF-TEST RUNNER VIEW -->
+    <div id="tab-selftest" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-selftest">
+      <div class="self-test-container">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff;">Automated Verification Suite</h2>
+            <p style="color: var(--text-secondary); font-size: 0.875rem;">
+              Directly executes production detection, Luhn/Verhoeff checksums, RFC-4180 CSV, and privacy logic (Categories A through K).
+            </p>
+          </div>
+          <button id="btn-run-tests" class="btn btn-shiny" style="padding: 0.75rem 1.75rem;">
+            <span>▶ Run All 61 Self-Tests</span>
           </button>
         </div>
 
@@ -239,11 +353,11 @@ Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></tex
             <span class="metric-lbl">Total Executed</span>
           </div>
           <div class="metric-card">
-            <span class="metric-val" id="metric-passed" style="color: var(--accent-green);">0</span>
+            <span class="metric-val" id="metric-passed" style="color: var(--accent-emerald);">0</span>
             <span class="metric-lbl">Passed</span>
           </div>
           <div class="metric-card">
-            <span class="metric-val" id="metric-failed" style="color: var(--accent-red);">0</span>
+            <span class="metric-val" id="metric-failed" style="color: var(--accent-rose);">0</span>
             <span class="metric-lbl">Failed</span>
           </div>
           <div class="metric-card">
@@ -255,12 +369,12 @@ Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></tex
         <!-- Test Results Card -->
         <div class="test-list-card">
           <div class="table-header">
-            <span style="font-weight: 600; font-size: 0.85rem;">Test Verification Checklist</span>
+            <span style="font-weight: 700; font-size: 0.85rem;">Test Verification Checklist (Categories A through K)</span>
             <span id="test-runner-status" style="font-size: 0.8rem; color: var(--text-muted);">Ready to execute</span>
           </div>
-          <div id="test-results-list" style="max-height: 500px; overflow-y: auto;">
-            <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
-              Click "Run All Self-Tests" to verify production algorithms.
+          <div id="test-results-list" style="max-height: 520px; overflow-y: auto;">
+            <div style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+              Click <strong>"Run All 61 Self-Tests"</strong> to execute the full deterministic verification suite.
             </div>
           </div>
         </div>
@@ -268,52 +382,42 @@ Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></tex
       </div>
     </div>
 
-    <!-- 3. SAFE ACTIVITY LOGS TAB -->
-    <div id="tab-logs" class="tab-pane" role="tabpanel">
-      <div class="logs-container">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <h2 style="font-size: 1.5rem; font-weight: 700;">Privacy-Safe Activity Logs</h2>
-            <p style="color: var(--text-secondary); font-size: 0.875rem;">
-              Logs store strictly safe operational metadata. Raw PII, input text, or sensitive exceptions are NEVER recorded.
-            </p>
-          </div>
-          <div style="display: flex; gap: 0.5rem;">
-            <button id="btn-clear-logs" class="btn btn-secondary">Clear Logs</button>
-            <button id="btn-export-logs-pane" class="btn btn-primary">Export JSON</button>
-          </div>
-        </div>
-
-        <div class="log-terminal" id="log-terminal">
-          <!-- Real-time log entries inserted here -->
-        </div>
-      </div>
-    </div>
-
-    <!-- 4. SECURITY SPECIFICATION TAB -->
-    <div id="tab-docs" class="tab-pane" role="tabpanel">
+    <!-- 4. SECURITY SPECIFICATION VIEW -->
+    <div id="tab-docs" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-docs">
       <article class="doc-container">
         <h1>🛡️ KAVACH Engineering & Privacy Architecture</h1>
-        <p>KAVACH is a zero-leak, 100% client-side privacy engine designed to eliminate PII leakage before data touches downstream systems.</p>
+        <p>KAVACH is a zero-leak, 100% client-side privacy engine designed to sanitize PII locally in user memory before any data is exported or transferred.</p>
 
         <h2>1. Zero-Leak Execution Model</h2>
-        <p>All sensitive operations occur strictly within JavaScript heap memory in the user's browser. KAVACH contains zero external network calls, zero tracking pixels, zero analytics, zero cookies, zero service-worker syncs, and zero database connectors.</p>
+        <p>
+          All operations occur strictly within transient JavaScript heap memory inside the local web browser.
+          The codebase contains zero calls to <code>fetch()</code>, <code>XMLHttpRequest</code>, <code>WebSocket</code>,
+          <code>EventSource</code>, or <code>navigator.sendBeacon()</code>. Zero analytics trackers or external CDN runtime scripts exist.
+        </p>
 
         <h2>2. Deterministic Validation Engine</h2>
         <ul>
-          <li><strong>Credit Cards:</strong> Strict 13–19 digit candidate extraction with ISO/IEC 7812-1 modulus 10 Luhn checksum validation. Rejects corrupted digits, 12-digit, and 20-digit strings.</li>
-          <li><strong>Indian PAN:</strong> <code>[A-Z]{5}[0-9]{4}[A-Z]</code> structure validation with strict left and right word boundary enforcement.</li>
-          <li><strong>IPv4 Addresses:</strong> Exactly 4 octets, each between 0 and 255. Strict rejection of software version strings (e.g. <code>v1.2.3.4</code>, <code>release-2.3.4.5</code>).</li>
+          <li><strong>Credit Cards:</strong> 13–19 digit candidate extraction with strict ISO/IEC 7812-1 modulus 10 Luhn checksum validation. Rejects corrupted numbers, 12-digit and 20-digit strings, and embedded IDs.</li>
+          <li><strong>Indian PAN:</strong> <code>[A-Z]{5}[0-9]{4}[A-Z]</code> validation with strict left and right word boundary isolation.</li>
+          <li><strong>IPv4 Addresses:</strong> Exactly 4 octets, each in [0, 255]. Rejects negative octets and software version strings (e.g. <code>v1.2.3.4</code>, <code>release-2.3.4.5</code>).</li>
           <li><strong>Indian Aadhaar:</strong> 12-digit candidate validation with Dihedral Group D5 Verhoeff checksum algorithm.</li>
-          <li><strong>Indian Mobile:</strong> 10-digit numbers starting with 6, 7, 8, 9 with prefix normalization (<code>+91</code>, <code>0</code>). Distinguishes phone numbers from dates and timestamps.</li>
-          <li><strong>Email:</strong> RFC 5322-compliant syntax validation with automatic trailing punctuation trimming.</li>
+          <li><strong>Indian Mobile:</strong> 10-digit mobile detection starting with 6–9 with prefix normalization (<code>+91</code>, <code>0</code>), rejecting dates and timestamps.</li>
+          <li><strong>International Phone:</strong> E.164 boundary constraints [8, 15] digits.</li>
+          <li><strong>Email:</strong> RFC 5322 syntax validation with automatic trailing sentence punctuation trimming.</li>
         </ul>
 
         <h2>3. RFC-4180 CSV Engine & Injection Defense</h2>
-        <p>KAVACH implements a native state-machine CSV parser that natively supports quoted commas, escaped double quotes, and embedded multiline strings. It also implements an explicit CSV formula injection shield, prepending <code>'</code> to any cell starting with <code>=, +, -, @</code>.</p>
+        <p>
+          KAVACH features a state-machine CSV parser that natively supports quoted commas, escaped double quotes (<code>""</code>),
+          and embedded multiline strings. It enforces an explicit CSV formula injection shield, prepending <code>'</code>
+          to any cell beginning with <code>=, +, -, @, \t, \r</code>.
+        </p>
 
         <h2>4. Deterministic Overlap Resolution</h2>
-        <p>Candidates are sorted by <code>start ascending</code>, <code>length descending</code>, and <code>priority tie-breaker</code>. Half-open intervals <code>[start, end)</code> guarantee that no source character is redacted twice.</p>
+        <p>
+          Candidate spans are sorted by <code>start ascending</code>, <code>length descending</code>, and deterministic priority tie-breaking.
+          Half-open intervals <code>[start, end)</code> guarantee that no character is ever double-redacted.
+        </p>
       </article>
     </div>
 

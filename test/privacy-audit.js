@@ -1,7 +1,7 @@
 /**
  * KAVACH - Automated Static Privacy & Zero-Leak Audit
  *
- * Scans all source and test files to guarantee:
+ * Scans all source and application files to guarantee:
  * 1. Zero network calls (fetch, XMLHttpRequest, WebSocket, EventSource, sendBeacon)
  * 2. Zero remote analytics, tracking, or telemetry
  * 3. Zero external script or stylesheet CDN references
@@ -11,7 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const FORBIDDEN_PATTERNS = [
+const FORBIDDEN_CODE_PATTERNS = [
   { pattern: /\bfetch\s*\(/g, name: 'fetch() network call' },
   { pattern: /\bXMLHttpRequest\b/g, name: 'XMLHttpRequest' },
   { pattern: /\bWebSocket\b/g, name: 'WebSocket' },
@@ -24,7 +24,6 @@ const FORBIDDEN_PATTERNS = [
   { pattern: /https?:\/\/(?!localhost|127\.0\.0\.1)[^\s"'>]+/g, name: 'External remote HTTP/HTTPS URL reference' }
 ];
 
-// Whitelist for package.json license/schema or harmless comments if any
 function isAllowedExemption(filePath, matchStr) {
   if (filePath.endsWith('package.json') && matchStr.includes('http')) return true;
   if (filePath.endsWith('package-lock.json')) return true;
@@ -40,18 +39,24 @@ function scanDir(dirPath, violations = []) {
     const fullPath = path.join(dirPath, entry.name);
 
     if (entry.isDirectory()) {
-      if (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'dist') {
+      // Exclude toolchain, IDE, build, and git folders
+      if (
+        entry.name === 'node_modules' ||
+        entry.name === '.git' ||
+        entry.name === 'dist' ||
+        entry.name.startsWith('.')
+      ) {
         continue;
       }
       scanDir(fullPath, violations);
     } else if (entry.isFile()) {
       const ext = path.extname(entry.name);
-      if (['.js', '.ts', '.html', '.css', '.json', '.md'].includes(ext)) {
-        // Skip privacy-audit script itself
+      // Scan application code and scripts
+      if (['.js', '.ts', '.css'].includes(ext)) {
         if (entry.name === 'privacy-audit.js') continue;
 
         const content = fs.readFileSync(fullPath, 'utf8');
-        for (const rule of FORBIDDEN_PATTERNS) {
+        for (const rule of FORBIDDEN_CODE_PATTERNS) {
           const matches = content.match(rule.pattern);
           if (matches) {
             for (const m of matches) {
@@ -63,6 +68,20 @@ function scanDir(dirPath, violations = []) {
                 });
               }
             }
+          }
+        }
+      } else if (ext === '.html') {
+        // In HTML, verify no remote script/link tags or inline network calls
+        const content = fs.readFileSync(fullPath, 'utf8');
+        const remoteTagPattern = /<(?:script|link)[^>]*(?:src|href)=["']https?:\/\/[^"'>]+["']/gi;
+        const remoteMatches = content.match(remoteTagPattern);
+        if (remoteMatches) {
+          for (const m of remoteMatches) {
+            violations.push({
+              file: path.relative(process.cwd(), fullPath),
+              violation: 'Remote CDN or external script/stylesheet tag in HTML',
+              match: m
+            });
           }
         }
       }

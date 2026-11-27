@@ -11,7 +11,7 @@ import { validateVerhoeff, generateVerhoeff } from '../src/core/verhoeff.js';
 import { detectCandidates } from '../src/core/detectors.js';
 import { validateCandidate, isSafeWordBoundary, hasVersionPrefix } from '../src/core/validators.js';
 import { resolveOverlaps } from '../src/core/overlap.js';
-import { Pseudonymizer, redactText } from '../src/core/redactor.js';
+import { Pseudonymizer, redactText, generatePartialMask } from '../src/core/redactor.js';
 import { processText } from '../src/core/engine.js';
 import { PiiType, ValidationStatus, RedactionMode } from '../src/core/types.js';
 
@@ -81,6 +81,13 @@ describe('4. IPv4 Validation & Version String Policy', () => {
     assert.strictEqual(res.status, ValidationStatus.REJECTED_OCTET_RANGE);
   });
 
+  it('should reject negative octets', () => {
+    const text = 'Host 192.168.-1.1';
+    const cand = { type: PiiType.IPV4, rawValue: '192.168.-1.1', start: 5, end: 17 };
+    const res = validateCandidate(cand, text);
+    assert.strictEqual(res.status, ValidationStatus.REJECTED_OCTET_RANGE);
+  });
+
   it('should reject version strings like v1.2.3.4 and release-2.3.4.5', () => {
     const text1 = 'App v1.2.3.4 is out';
     const cand1 = { type: PiiType.IPV4, rawValue: '1.2.3.4', start: 5, end: 12 };
@@ -133,5 +140,19 @@ describe('6. Redaction Modes & Consistent Pseudonymization', () => {
     const cardToken = p.getToken(PiiType.CREDIT_CARD, '4532015112830366');
     assert.strictEqual(emailToken, 'EMAIL_01');
     assert.strictEqual(cardToken, 'CARD_01');
+  });
+
+  it('should generate proper partial mask for emails with domain masking', () => {
+    const finding = {
+      id: 'f_1',
+      type: PiiType.EMAIL,
+      rawValue: 'user@example.com',
+      normalizedValue: 'user@example.com',
+      start: 0,
+      end: 16,
+      status: ValidationStatus.VALID
+    };
+    const masked = generatePartialMask(finding);
+    assert.strictEqual(masked, 'u***@e******.com');
   });
 });

@@ -24,11 +24,21 @@ export function generatePartialMask(finding) {
       const atIdx = raw.indexOf('@');
       if (atIdx === -1) return '*'.repeat(len);
       const user = raw.slice(0, atIdx);
-      const domain = raw.slice(atIdx);
-      if (user.length <= 2) {
-        return `${user[0]}*${domain}`;
+      const host = raw.slice(atIdx + 1);
+      const firstUser = user.length > 0 ? user[0] : '';
+      const maskedUser = `${firstUser}${'*'.repeat(Math.max(1, user.length - 1))}`;
+
+      const dotIdx = host.lastIndexOf('.');
+      let maskedHost = host;
+      if (dotIdx > 0) {
+        const domainName = host.slice(0, dotIdx);
+        const tld = host.slice(dotIdx);
+        const firstDomain = domainName.length > 0 ? domainName[0] : '';
+        maskedHost = `${firstDomain}${'*'.repeat(Math.max(1, domainName.length - 1))}${tld}`;
+      } else if (host.length > 0) {
+        maskedHost = `${host[0]}${'*'.repeat(Math.max(1, host.length - 1))}`;
       }
-      return `${user.slice(0, 2)}${'*'.repeat(Math.max(1, user.length - 2))}${domain}`;
+      return `${maskedUser}@${maskedHost}`;
     }
 
     case PiiType.CREDIT_CARD: {

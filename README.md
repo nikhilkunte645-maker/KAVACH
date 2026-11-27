@@ -9,18 +9,18 @@
 1. **Zero-Leak Client-Side Execution:**
    - All processing executes exclusively in local browser RAM.
    - Zero outbound requests: no `fetch()`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `navigator.sendBeacon()`, or third-party CDNs.
-   - Works 100% offline.
+   - Works 100% offline with zero external network dependencies.
 2. **Zero Persistent Storage:**
    - Never writes sensitive data or raw PII to `localStorage`, `sessionStorage`, `IndexedDB`, cookies, or browser history.
    - Immediate full transient state wiping on reset.
 3. **Deterministic Mathematical Validation:**
-   - **Credit Cards:** 13–19 digits, boundary checks against longer numbers, strict ISO/IEC 7812-1 modulus 10 Luhn checksum validation.
+   - **Credit Cards:** 13–19 digits, separator normalization, boundary checks against longer numbers, strict ISO/IEC 7812-1 modulus 10 Luhn checksum validation.
    - **Indian PAN:** Case-insensitive `[A-Z]{5}[0-9]{4}[A-Z]` format with strict left and right word boundary isolation.
-   - **IPv4 Addresses:** Strict 4-octet bounds [0, 255] and software version string rejection policy (e.g., `v1.2.3.4`, `release-2.3.4.5`).
+   - **IPv4 Addresses:** Strict 4-octet bounds [0, 255], negative octet rejection, and software version string rejection policy (e.g., `v1.2.3.4`, `release-2.3.4.5`).
    - **Indian Aadhaar:** 12-digit candidate validation with Dihedral Group D5 Verhoeff checksum algorithm.
-   - **Indian Mobile:** 10-digit mobile detection with `+91` / `0` prefix normalization, date & timestamp rejection.
+   - **Indian Mobile:** 10-digit mobile detection with `+91` / `0` prefix normalization, date & timestamp false-positive rejection.
    - **International Phone:** E.164-compatible length and token rules.
-   - **Email:** RFC 5322 syntax validation with automated trailing punctuation trimming.
+   - **Email:** RFC 5322 syntax validation with automated trailing sentence punctuation trimming.
 4. **Deterministic Overlap Resolution:**
    - Sorted by `start` ascending, span length descending, and deterministic priority tie-breaking.
    - Half-open intervals `[start, end)` guarantee that no character is ever double-redacted.
@@ -29,10 +29,14 @@
    - CSV formula injection shield prefixes dangerous leading `=, +, -, @, \t, \r` with `'`.
 6. **XSS & HTML Injection Defense:**
    - Zero unsafe `innerHTML` usage with untrusted strings. All diffs rendered via safe DOM text nodes.
-7. **Privacy-Safe Activity Logs:**
-   - Only operational metadata (timestamp, operation type, category, counts, status) is stored or exported. Zero raw PII in logs or console.
+7. **Privacy-Safe Activity Logs & Analytics:**
+   - Operational metadata (timestamp, operation type, category, counts, status) is stored in transient heap memory. Zero raw PII in logs, console, or exported JSON.
 8. **Built-In Self-Test Runner:**
-   - Interactive browser UI runner and terminal CLI runner (`npm run test:self`) executing 36 automated test cases against production code.
+   - Interactive browser UI runner and terminal CLI runner (`npm run test:self`) executing 61 automated test cases across Categories A through K.
+9. **Premium Security UI:**
+   - **Liquid Glass Tab Bar:** Pill-shaped glassmorphic navigation with animated glass lens highlight, full WAI-ARIA tab pattern, keyboard navigation (Arrow keys, Home, End), and reduced-motion support.
+   - **Compact Security Hero:** Introducing "KAVACH — Your data stays yours." with ambient lighting and direct workflow triggers.
+   - **Shiny Buttons:** Subtle shimmer animation on primary actions with accessibility and reduced-motion fallbacks.
 
 ---
 
@@ -41,13 +45,13 @@
 ```
 c:\Users\lucifer\Downloads\KAVACH\
   ├── index.html                  # Standalone client-side web application
-  ├── style.css                   # Cyber-defense dark mode UI styling
+  ├── style.css                   # Cyber-defense UI styling (Liquid Glass, Shiny Buttons)
   ├── tsconfig.json               # TypeScript configuration for strict type checking
   ├── package.json                # Project configuration, test scripts, build script
   ├── .gitignore                  # Git ignore rules
   ├── src/
   │   ├── core/
-  │   │   ├── types.js            # PII types, priorities, and interfaces
+  │   │   ├── types.js            # PII types, priorities, and validation status enums
   │   │   ├── luhn.js             # Luhn modulus 10 checksum algorithm
   │   │   ├── verhoeff.js         # Verhoeff D5 checksum algorithm
   │   │   ├── detectors.js        # Deterministic candidate boundary detectors
@@ -60,11 +64,11 @@ c:\Users\lucifer\Downloads\KAVACH\
   │   │   ├── state.js            # Transient in-memory state manager
   │   │   └── engine.js           # Main processing engine orchestrator
   │   ├── self-test/
-  │   │   ├── test-cases.js       # Production test cases covering Section 9 spec
-  │   │   └── runner.js           # Self-test runner module
+  │   │   ├── test-cases.js       # 61 production test cases covering Categories A-K
+  │   │   └── runner.js           # Self-test runner module with live metrics
   │   └── app.js                  # Main UI controller & DOM event handling
   ├── test/
-  │   ├── unit.test.js            # Node:test unit test suite
+  │   ├── unit.test.js            # Node:test unit test suite (24 tests)
   │   ├── csv.test.js             # RFC-4180 CSV and formula injection test suite
   │   ├── privacy-audit.js        # Static privacy & zero-leak network scanner
   │   └── cli-runner.js           # CLI self-test execution wrapper
@@ -80,7 +84,7 @@ c:\Users\lucifer\Downloads\KAVACH\
 # 1. Run all unit tests (node:test)
 npm test
 
-# 2. Run built-in self-test suite (36 production tests)
+# 2. Run built-in self-test suite (61 production tests across Categories A-K)
 npm run test:self
 
 # 3. Run TypeScript static type checking
