@@ -761,32 +761,26 @@ function initSelfTestRunner() {
 
   renderInitialTests();
 
-  // Search filter
-  testSearch?.addEventListener('input', () => {
-    const query = testSearch.value.trim().toLowerCase();
+  const applyTestFilters = () => {
+    const query = (testSearch?.value || '').trim().toLowerCase();
+    const showOnlyFailures = failuresOnlyToggle?.checked ?? false;
     const items = document.querySelectorAll('.kv-test-item');
     items.forEach((item) => {
       const testName = item.getAttribute('data-test-name') || '';
       const parentGroup = item.closest('.kv-test-group');
       const category = parentGroup?.getAttribute('data-category')?.toLowerCase() || '';
-      const matches = !query || testName.includes(query) || category.includes(query);
-      /** @type {HTMLElement} */ (item).style.display = matches ? 'flex' : 'none';
+      const status = item.getAttribute('data-status');
+      const matchesQuery = !query || testName.includes(query) || category.includes(query);
+      const matchesFailure = !showOnlyFailures || status === 'fail';
+      /** @type {HTMLElement} */ (item).style.display = (matchesQuery && matchesFailure) ? 'flex' : 'none';
     });
-  });
+  };
+
+  // Search filter
+  testSearch?.addEventListener('input', applyTestFilters);
 
   // Failures-only toggle
-  failuresOnlyToggle?.addEventListener('change', () => {
-    const showOnlyFailures = failuresOnlyToggle.checked;
-    const items = document.querySelectorAll('.kv-test-item');
-    items.forEach((item) => {
-      const status = item.getAttribute('data-status');
-      if (showOnlyFailures) {
-        /** @type {HTMLElement} */ (item).style.display = status === 'fail' ? 'flex' : 'none';
-      } else {
-        /** @type {HTMLElement} */ (item).style.display = 'flex';
-      }
-    });
-  });
+  failuresOnlyToggle?.addEventListener('change', applyTestFilters);
 
   // Expand / Collapse all
   expandAllBtn?.addEventListener('click', () => {
@@ -799,14 +793,21 @@ function initSelfTestRunner() {
   btnRunTests.addEventListener('click', async () => {
     btnRunTests.setAttribute('disabled', 'true');
     if (testRunnerStatus) testRunnerStatus.textContent = 'Executing full test suite locally (61 tests)...';
+    if (progressBarPass) progressBarPass.style.width = '0%';
+    if (progressBarFail) progressBarFail.style.width = '0%';
 
     const testItemEls = document.querySelectorAll('.kv-test-item');
     const categoryPassMap = {};
+    let passedCount = 0;
+    let failedCount = 0;
 
     const summary = await runAllSelfTests((res, curr, total) => {
+      if (res.passed) passedCount++;
+      else failedCount++;
+
       if (progressLabel) progressLabel.textContent = `${curr} / ${total}`;
-      const percent = (curr / total) * 100;
-      if (progressBarPass) progressBarPass.style.width = `${percent}%`;
+      if (progressBarPass) progressBarPass.style.width = `${(passedCount / total) * 100}%`;
+      if (progressBarFail) progressBarFail.style.width = `${(failedCount / total) * 100}%`;
 
       if (!categoryPassMap[res.category]) categoryPassMap[res.category] = { passed: 0, total: 0 };
       categoryPassMap[res.category].total++;
@@ -853,6 +854,7 @@ function initSelfTestRunner() {
         ? `All ${summary.total} tests passed in ${summary.durationMs}ms`
         : `${summary.failed} tests failed!`;
     }
+    applyTestFilters();
     btnRunTests.removeAttribute('disabled');
   });
 }
