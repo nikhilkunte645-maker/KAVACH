@@ -1,0 +1,32 @@
+{
+  "name": "kavach",
+  "version": "1.0.0",
+  "description": "KAVACH - 100% Client-Side Deterministic PII Redactor and Privacy Engine",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:self": "node test/cli-runner.js",
+    "typecheck": "tsc --noEmit",
+    "lint:privacy": "node test/privacy-audit.js",
+    "verify": "npm run typecheck && npm test && npm run test:self && npm run lint:privacy",
+    "build": "node scripts/build.js"
+  },
+  "keywords": [
+    "pii",
+    "redaction",
+    "privacy",
+    "client-side",
+    "security",
+    "luhn",
+    "aadhaar",
+    "pan",
+    "csv-integrity"
+  ],
+  "author": "KAVACH Security & Privacy Engineering",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^26.6.11",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAVACH — 100% Client-Side PII Redactor & Privacy Engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="kavach-header">
+    <div class="brand-section">
+      <div class="brand-title">
+        <span>🛡️ KAVACH</span>
+      </div>
+      <span class="brand-badge">ZERO-LEAK CLIENT MEMORY</span>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab-btn active" data-tab="tab-workspace" role="tab" aria-selected="true">
+        <span>Workspace</span>
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-selftest" role="tab" aria-selected="false">
+        <span>Self-Test Runner</span>
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-logs" role="tab" aria-selected="false">
+        <span>Safe Activity Logs</span>
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-docs" role="tab" aria-selected="false">
+        <span>Security Spec</span>
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button id="btn-reset" class="btn btn-danger" title="Wipes transient memory and resets state">
+        <span>Reset / Wipe</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-container">
+
+    <!-- 1. WORKSPACE TAB -->
+    <div id="tab-workspace" class="tab-pane active" role="tabpanel">
+      <div class="workspace-container">
+
+        <!-- Sidebar Configuration -->
+        <aside class="config-sidebar">
+
+          <!-- Detector Selection -->
+          <div class="sidebar-section">
+            <h3 class="section-title">Active PII Detectors</h3>
+            <div class="control-group">
+              <label class="toggle-label">
+                <span>Credit Cards (13-19 digits, Luhn)</span>
+                <input type="checkbox" id="det-cc" checked>
+              </label>
+              <label class="toggle-label">
+                <span>Indian PAN ([A-Z]{5}[0-9]{4}[A-Z])</span>
+                <input type="checkbox" id="det-pan" checked>
+              </label>
+              <label class="toggle-label">
+                <span>Indian Aadhaar (12 digits, Verhoeff)</span>
+                <input type="checkbox" id="det-aadhaar" checked>
+              </label>
+              <label class="toggle-label">
+                <span>IPv4 (Octet boundaries, Non-version)</span>
+                <input type="checkbox" id="det-ipv4" checked>
+              </label>
+              <label class="toggle-label">
+                <span>Indian Mobile (+91 / 0 / 10-digit)</span>
+                <input type="checkbox" id="det-phone-in" checked>
+              </label>
+              <label class="toggle-label">
+                <span>International Phone (E.164)</span>
+                <input type="checkbox" id="det-phone-intl" checked>
+              </label>
+              <label class="toggle-label">
+                <span>Email (RFC 5322 syntax)</span>
+                <input type="checkbox" id="det-email" checked>
+              </label>
+            </div>
+          </div>
+
+          <!-- Redaction Mode Selection -->
+          <div class="sidebar-section">
+            <h3 class="section-title">Redaction Mode</h3>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="redaction-mode" value="FULL_MASK" checked>
+                <div>
+                  <strong>Full Mask</strong>
+                  <span class="radio-desc">Replace entire token with [REDACTED_TYPE]</span>
+                </div>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="redaction-mode" value="PARTIAL_MASK">
+                <div>
+                  <strong>Partial Mask</strong>
+                  <span class="radio-desc">Reveal only safe tails (e.g. ****1234)</span>
+                </div>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="redaction-mode" value="PSEUDONYMIZE">
+                <div>
+                  <strong>Consistent Pseudonymization</strong>
+                  <span class="radio-desc">Deterministic tokens (EMAIL_01, CARD_01)</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Security Hardening Options -->
+          <div class="sidebar-section">
+            <h3 class="section-title">Security Hardening</h3>
+            <div class="control-group">
+              <label class="toggle-label" title="Prefix cells starting with =, +, -, @ with single quote">
+                <span>CSV Formula Injection Shield</span>
+                <input type="checkbox" id="opt-formula-shield" checked>
+              </label>
+              <label class="toggle-label" title="Require Verhoeff checksum for Aadhaar">
+                <span>Strict Aadhaar Verhoeff Check</span>
+                <input type="checkbox" id="opt-aadhaar-verhoeff" checked>
+              </label>
+            </div>
+          </div>
+
+          <!-- Export Actions -->
+          <div class="sidebar-section">
+            <h3 class="section-title">Safe Export</h3>
+            <div class="control-group">
+              <button id="btn-export-redacted" class="btn btn-primary">
+                <span>Download Redacted File</span>
+              </button>
+              <button id="btn-export-logs" class="btn btn-secondary">
+                <span>Export Activity Log (JSON)</span>
+              </button>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <section class="workspace-main">
+
+          <!-- Drop Zone -->
+          <div id="drop-zone" class="drop-zone">
+            <div class="drop-zone-icon">📁</div>
+            <div class="drop-zone-text"><strong>Drag & Drop .txt or .csv files here</strong>, or click to browse</div>
+            <div class="drop-zone-subtext">100% Client-side. File data never leaves browser transient memory.</div>
+            <input type="file" id="file-input" accept=".txt,.csv,text/plain,text/csv" style="display: none;">
+          </div>
+
+          <!-- Dual Editor Grid -->
+          <div class="editors-grid">
+            <div class="editor-card">
+              <div class="editor-header">
+                <span class="editor-title">Source Input (<span id="source-format-label">Raw Text</span>)</span>
+                <span id="char-count" style="font-size: 0.75rem; color: var(--text-muted);">0 chars</span>
+              </div>
+              <textarea id="input-text" class="editor-textarea" placeholder="Paste sensitive text or CSV here... Example:
+Alice Smith, alice@example.com, 4532015112830366, 192.168.1.1, ABCDE1234F"></textarea>
+            </div>
+
+            <div class="editor-card">
+              <div class="editor-header">
+                <span class="editor-title">Redacted Output</span>
+                <button id="btn-copy-output" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Copy</button>
+              </div>
+              <textarea id="output-text" class="editor-textarea" readonly placeholder="Redacted output will appear here automatically..."></textarea>
+            </div>
+          </div>
+
+          <!-- Safe Diff View -->
+          <div class="table-card">
+            <div class="table-header">
+              <h4 style="font-size: 0.85rem; font-weight: 600;">Safe Visual Diff (XSS-Inert)</h4>
+              <span id="diff-status-label" style="font-size: 0.75rem; color: var(--text-muted);">No modifications</span>
+            </div>
+            <div id="diff-output" class="diff-container">
+              <span class="diff-unchanged">Input text above to see side-by-side safe redaction diff...</span>
+            </div>
+          </div>
+
+          <!-- Findings Table -->
+          <div class="table-card">
+            <div class="table-header">
+              <h4 style="font-size: 0.85rem; font-weight: 600;">Detected Findings (<span id="findings-count-badge">0</span>)</h4>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Resolved non-overlapping spans</span>
+            </div>
+            <div style="overflow-x: auto; max-height: 240px;">
+              <table class="findings-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Span [Start, End)</th>
+                    <th>Status</th>
+                    <th>Masked Value</th>
+                  </tr>
+                </thead>
+                <tbody id="findings-tbody">
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No PII findings detected in current input.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </div>
+
+    <!-- 2. BUILT-IN SELF-TEST RUNNER TAB -->
+    <div id="tab-selftest" class="tab-pane" role="tabpanel">
+      <div class="self-test-container">
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700;">Built-In Automated Self-Test Runner</h2>
+            <p style="color: var(--text-secondary); font-size: 0.875rem;">
+              Directly executes the actual production detection, validation, redaction, and CSV logic.
+            </p>
+          </div>
+          <button id="btn-run-tests" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+            <span>▶ Run All Self-Tests</span>
+          </button>
+        </div>
+
+        <!-- Metrics Cards -->
+        <div class="metrics-row">
+          <div class="metric-card">
+            <span class="metric-val" id="metric-total">0</span>
+            <span class="metric-lbl">Total Executed</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val" id="metric-passed" style="color: var(--accent-green);">0</span>
+            <span class="metric-lbl">Passed</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val" id="metric-failed" style="color: var(--accent-red);">0</span>
+            <span class="metric-lbl">Failed</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val" id="metric-duration" style="color: var(--accent-cyan);">0ms</span>
+            <span class="metric-lbl">Suite Duration</span>
+          </div>
+        </div>
+
+        <!-- Test Results Card -->
+        <div class="test-list-card">
+          <div class="table-header">
+            <span style="font-weight: 600; font-size: 0.85rem;">Test Verification Checklist</span>
+            <span id="test-runner-status" style="font-size: 0.8rem; color: var(--text-muted);">Ready to execute</span>
+          </div>
+          <div id="test-results-list" style="max-height: 500px; overflow-y: auto;">
+            <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+              Click "Run All Self-Tests" to verify production algorithms.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. SAFE ACTIVITY LOGS TAB -->
+    <div id="tab-logs" class="tab-pane" role="tabpanel">
+      <div class="logs-container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700;">Privacy-Safe Activity Logs</h2>
+            <p style="color: var(--text-secondary); font-size: 0.875rem;">
+              Logs store strictly safe operational metadata. Raw PII, input text, or sensitive exceptions are NEVER recorded.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btn-clear-logs" class="btn btn-secondary">Clear Logs</button>
+            <button id="btn-export-logs-pane" class="btn btn-primary">Export JSON</button>
+          </div>
+        </div>
+
+        <div class="log-terminal" id="log-terminal">
+          <!-- Real-time log entries inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SECURITY SPECIFICATION TAB -->
+    <div id="tab-docs" class="tab-pane" role="tabpanel">
+      <article class="doc-container">
+        <h1>🛡️ KAVACH Engineering & Privacy Architecture</h1>
+        <p>KAVACH is a zero-leak, 100% client-side privacy engine designed to eliminate PII leakage before data touches downstream systems.</p>
+
+        <h2>1. Zero-Leak Execution Model</h2>
+        <p>All sensitive operations occur strictly within JavaScript heap memory in the user's browser. KAVACH contains zero external network calls, zero tracking pixels, zero analytics, zero cookies, zero service-worker syncs, and zero database connectors.</p>
+
+        <h2>2. Deterministic Validation Engine</h2>
+        <ul>
+          <li><strong>Credit Cards:</strong> Strict 13–19 digit candidate extraction with ISO/IEC 7812-1 modulus 10 Luhn checksum validation. Rejects corrupted digits, 12-digit, and 20-digit strings.</li>
+          <li><strong>Indian PAN:</strong> <code>[A-Z]{5}[0-9]{4}[A-Z]</code> structure validation with strict left and right word boundary enforcement.</li>
+          <li><strong>IPv4 Addresses:</strong> Exactly 4 octets, each between 0 and 255. Strict rejection of software version strings (e.g. <code>v1.2.3.4</code>, <code>release-2.3.4.5</code>).</li>
+          <li><strong>Indian Aadhaar:</strong> 12-digit candidate validation with Dihedral Group D5 Verhoeff checksum algorithm.</li>
+          <li><strong>Indian Mobile:</strong> 10-digit numbers starting with 6, 7, 8, 9 with prefix normalization (<code>+91</code>, <code>0</code>). Distinguishes phone numbers from dates and timestamps.</li>
+          <li><strong>Email:</strong> RFC 5322-compliant syntax validation with automatic trailing punctuation trimming.</li>
+        </ul>
+
+        <h2>3. RFC-4180 CSV Engine & Injection Defense</h2>
+        <p>KAVACH implements a native state-machine CSV parser that natively supports quoted commas, escaped double quotes, and embedded multiline strings. It also implements an explicit CSV formula injection shield, prepending <code>'</code> to any cell starting with <code>=, +, -, @</code>.</p>
+
+        <h2>4. Deterministic Overlap Resolution</h2>
+        <p>Candidates are sorted by <code>start ascending</code>, <code>length descending</code>, and <code>priority tie-breaker</code>. Half-open intervals <code>[start, end)</code> guarantee that no source character is redacted twice.</p>
+      </article>
+    </div>
+
+  </main>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
