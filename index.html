@@ -8,50 +8,57 @@
 </head>
 <body>
 
-  <!-- 1. Header (Compact Linear/Raycast Workbench Bar) -->
-  <header class="kavach-header">
-    <div class="brand-section">
-      <div class="brand-title">
-        <svg class="brand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <!-- ==========================================================
+       GLOBAL STICKY HEADER (56px)
+       ========================================================== -->
+  <header class="kv-header">
+    <div class="kv-brand">
+      <span class="kv-brand-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           <path d="m9 12 2 2 4-4"/>
         </svg>
-        <span>KAVACH</span>
-      </div>
-      <span class="brand-badge" id="privacy-status-pill">
-        <span class="pulse-dot" aria-hidden="true"></span>
-        <span>100% Client-Side • Zero Network Leaks</span>
       </span>
+      <span class="kv-brand-title">KAVACH</span>
+      <span class="kv-brand-desc">Client-Side PII Redactor</span>
     </div>
 
-    <!-- Liquid Glass Tab Bar Navigation (Consolidated to Exactly 3 Tabs) -->
-    <nav class="liquid-glass-container" role="tablist" aria-label="Main Navigation">
-      <div class="glass-lens" id="glass-lens" aria-hidden="true"></div>
-      <button class="liquid-tab-btn active" data-tab="tab-workspace" role="tab" aria-selected="true" id="tab-btn-workspace" tabindex="0">
-        <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <!-- Top-Level Navigation: Exactly Three Primary Tabs -->
+    <nav class="kv-tabs" role="tablist" aria-label="Main Navigation">
+      <div id="glass-lens" style="display: none;" aria-hidden="true"></div>
+      <button class="kv-tab-btn liquid-tab-btn active" data-tab="tab-workspace" role="tab" aria-selected="true" id="tab-btn-workspace" tabindex="0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
         <span>Workspace</span>
       </button>
-      <button class="liquid-tab-btn" data-tab="tab-selftest" role="tab" aria-selected="false" id="tab-btn-selftest" tabindex="-1">
-        <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <button class="kv-tab-btn liquid-tab-btn" data-tab="tab-selftest" role="tab" aria-selected="false" id="tab-btn-selftest" tabindex="-1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M9 11l3 3L22 4"/>
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>
         <span>Self-Test Suite</span>
       </button>
-      <button class="liquid-tab-btn" data-tab="tab-analytics" role="tab" aria-selected="false" id="tab-btn-analytics" tabindex="-1">
-        <svg class="tab-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <button class="kv-tab-btn liquid-tab-btn" data-tab="tab-analytics" role="tab" aria-selected="false" id="tab-btn-analytics" tabindex="-1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
         <span>Privacy & Audit Logs</span>
       </button>
     </nav>
 
-    <!-- Header Actions -->
-    <div class="header-actions">
-      <button id="btn-reset" class="btn btn-danger" title="Wipes transient memory and resets application state">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <!-- Header Right: Privacy Status Pill & Actions -->
+    <div class="kv-header-right">
+      <div class="kv-privacy-pill" id="privacy-status-pill">
+        <span class="kv-pulse-dot" aria-hidden="true"></span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>100% Client-Side • Zero Network Leaks</span>
+      </div>
+
+      <button id="btn-reset" class="btn-reset" title="Wipes transient memory and resets application state">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
           <path d="M21 3v5h-5"/>
           <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
@@ -62,482 +69,673 @@
     </div>
   </header>
 
-  <!-- 2. Ultra-Compact Security Hero Status Strip (38px height) -->
-  <section class="kavach-hero">
-    <div class="hero-content">
-      <span class="hero-title">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-icon" aria-hidden="true">
-          <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-        <span>Your data stays yours.</span>
-      </span>
-      <span class="hero-divider" aria-hidden="true">•</span>
-      <span class="hero-desc">
-        100% in-browser RAM execution. Deterministic Luhn & Verhoeff checksums, RFC-4180 CSV, zero network calls.
-      </span>
-    </div>
-    <div class="hero-actions">
-      <button id="hero-btn-redact" class="btn btn-shiny">
-        <span>Start Redacting</span>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="5" y1="12" x2="19" y2="12"/>
-          <polyline points="12 5 19 12 12 19"/>
-        </svg>
-      </button>
-      <button id="hero-btn-selftest" class="btn btn-outline-cyan">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polygon points="5 3 19 12 5 21 5 3"/>
-        </svg>
-        <span>Run Self-Test (61)</span>
-      </button>
-    </div>
-  </section>
+  <!-- ==========================================================
+       MAIN VIEWPORT CONTAINER
+       ========================================================== -->
+  <main class="kv-main">
 
-  <!-- 3. Main Viewports -->
-  <main class="app-container">
-
-    <!-- 1. WORKSPACE VIEW (REDACT) -->
+    <!-- ========================================================
+         SCREEN A: WORKSPACE TAB
+         ======================================================== -->
     <div id="tab-workspace" class="tab-pane active" role="tabpanel" aria-labelledby="tab-btn-workspace">
-      <div class="workspace-container">
+      <div class="kv-workspace">
 
-        <!-- Compact Settings Sidebar (260px width, Top-Aligned) -->
-        <aside class="config-sidebar" aria-label="Detection Configuration">
+        <!-- 1. Compact Product Intro -->
+        <section class="kv-intro">
+          <div class="kv-intro-left">
+            <h1 class="kv-intro-title">Your Sensitive Data. Your Browser. Your Control.</h1>
+            <span class="kv-intro-divider">/</span>
+            <p class="kv-intro-sub">Detect, validate and redact personal data locally. Nothing leaves this device.</p>
+          </div>
+          <div style="display: none;">
+            <button id="hero-btn-redact">Start Redacting</button>
+            <button id="hero-btn-selftest">Run Self-Test</button>
+          </div>
+        </section>
 
-          <!-- Detector Selection -->
-          <div class="sidebar-section">
-            <h2 class="section-title">Active PII Detectors</h2>
-            <div class="control-group">
-              <label class="toggle-label">
-                <span>Credit Cards (Luhn mod-10)</span>
-                <input type="checkbox" id="det-cc" checked>
-              </label>
-              <label class="toggle-label">
-                <span>Indian PAN (Alphanumeric)</span>
-                <input type="checkbox" id="det-pan" checked>
-              </label>
-              <label class="toggle-label">
-                <span>Indian Aadhaar (Verhoeff D5)</span>
-                <input type="checkbox" id="det-aadhaar" checked>
-              </label>
-              <label class="toggle-label">
-                <span>IPv4 (Octets 0-255)</span>
-                <input type="checkbox" id="det-ipv4" checked>
-              </label>
-              <label class="toggle-label">
-                <span>Indian Mobile (+91/0)</span>
-                <input type="checkbox" id="det-phone-in" checked>
-              </label>
-              <label class="toggle-label">
-                <span>International Phone (E.164)</span>
-                <input type="checkbox" id="det-phone-intl" checked>
-              </label>
-              <label class="toggle-label">
-                <span>Email (RFC 5322 Syntax)</span>
-                <input type="checkbox" id="det-email" checked>
-              </label>
-            </div>
+        <!-- 2. Single-Row Control Dock (Glass) -->
+        <section class="kv-dock" aria-label="Workbench Controls">
+          <div class="kv-dock-left">
+            <button id="btn-load-sample" class="btn-secondary" type="button">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              <span>Load Sample Data</span>
+            </button>
+
+            <!-- File Drop Zone -->
+            <label id="drop-zone" class="kv-drop-zone" for="file-input" tabindex="0" role="button" aria-label="Select or Drop File">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <span>Drop .txt or .csv here, or <span class="kv-drop-browse">browse</span></span>
+              <input type="file" id="file-input" accept=".txt,.csv,text/plain,text/csv" style="display: none;">
+            </label>
+
+            <!-- Source Status Badge -->
+            <span class="kv-source-badge">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              <span id="source-format-label">Typed input</span> • <strong id="char-count">0 chars</strong>
+            </span>
           </div>
 
-          <!-- Redaction Mode Selection -->
-          <div class="sidebar-section">
-            <h2 class="section-title">Redaction Strategy</h2>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="redaction-mode" value="FULL_MASK" checked>
-                <div>
-                  <strong>Full Mask</strong>
-                  <span class="radio-desc">Replace token with [REDACTED_TYPE]</span>
-                </div>
+          <div class="kv-dock-right">
+            <!-- Segmented Mode Control (3 Options) -->
+            <div class="kv-segmented-group" role="radiogroup" aria-label="Redaction Mode">
+              <label class="kv-segment-btn active" id="label-mode-full">
+                <input type="radio" name="redaction-mode" value="FULL_MASK" checked style="display: none;">
+                <span>Full Mask</span>
               </label>
-              <label class="radio-label">
-                <input type="radio" name="redaction-mode" value="PARTIAL_MASK">
-                <div>
-                  <strong>Partial Mask</strong>
-                  <span class="radio-desc">Preserve safe tails (u***@e***.com, ****1234)</span>
-                </div>
+              <label class="kv-segment-btn" id="label-mode-partial">
+                <input type="radio" name="redaction-mode" value="PARTIAL_MASK" style="display: none;">
+                <span>Partial Mask</span>
               </label>
-              <label class="radio-label">
-                <input type="radio" name="redaction-mode" value="PSEUDONYMIZE">
-                <div>
-                  <strong>Pseudonymization</strong>
-                  <span class="radio-desc">Consistent run-scoped tokens (EMAIL_01)</span>
-                </div>
+              <label class="kv-segment-btn" id="label-mode-pseudo">
+                <input type="radio" name="redaction-mode" value="PSEUDONYMIZE" style="display: none;">
+                <span>Consistent Pseudonymization</span>
               </label>
             </div>
-          </div>
 
-          <!-- Security Hardening Options -->
-          <div class="sidebar-section">
-            <h2 class="section-title">Security Policies</h2>
-            <div class="control-group">
-              <label class="toggle-label" title="Prefix cells starting with =, +, -, @ with single quote">
-                <span>CSV Formula Shield</span>
-                <input type="checkbox" id="opt-formula-shield" checked>
-              </label>
-              <label class="toggle-label" title="Require Verhoeff checksum for Aadhaar">
-                <span>Strict Aadhaar Verhoeff</span>
-                <input type="checkbox" id="opt-aadhaar-verhoeff" checked>
-              </label>
-            </div>
-          </div>
+            <!-- Primary Redact Button -->
+            <button id="btn-run-redact" class="btn-redact" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+              <span>Redact</span>
+            </button>
 
-          <!-- Safe Export Actions -->
-          <div class="sidebar-section">
-            <h2 class="section-title">Safe Export</h2>
-            <div class="control-group">
-              <button id="btn-export-redacted" class="btn btn-shiny">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                <span>Download Redacted File</span>
-              </button>
-              <button id="btn-export-logs" class="btn btn-secondary">
+            <!-- Export Button -->
+            <button id="btn-export-redacted" class="btn-export" type="button">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Export</span>
+            </button>
+
+            <!-- Popover for Detectors & Security Policies -->
+            <details class="kv-config-details">
+              <summary class="btn-secondary" title="Active Detectors and Security Settings">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                  <polyline points="10 9 9 9 8 9"/>
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                 </svg>
-                <span>Export Activity Log (JSON)</span>
-              </button>
+                <span>Filters</span>
+              </summary>
+              <div class="kv-config-popover">
+                <div class="kv-popover-title">Active Detectors</div>
+                <label class="kv-toggle-row">
+                  <span>Credit Cards (Luhn)</span>
+                  <input type="checkbox" id="det-cc" checked>
+                </label>
+                <label class="kv-toggle-row">
+                  <span>Indian PAN</span>
+                  <input type="checkbox" id="det-pan" checked>
+                </label>
+                <label class="kv-toggle-row">
+                  <span>Indian Aadhaar (Verhoeff)</span>
+                  <input type="checkbox" id="det-aadhaar" checked>
+                </label>
+                <label class="kv-toggle-row">
+                  <span>IPv4 Addresses</span>
+                  <input type="checkbox" id="det-ipv4" checked>
+                </label>
+                <label class="kv-toggle-row">
+                  <span>Indian Mobile (+91/0)</span>
+                  <input type="checkbox" id="det-phone-in" checked>
+                </label>
+                <label class="kv-toggle-row">
+                  <span>International Phone</span>
+                  <input type="checkbox" id="det-phone-intl" checked>
+                </label>
+                <label class="kv-toggle-row">
+                  <span>Email Addresses</span>
+                  <input type="checkbox" id="det-email" checked>
+                </label>
+                <div class="kv-popover-title" style="margin-top: 6px;">Policies</div>
+                <label class="kv-toggle-row">
+                  <span>CSV Formula Shield</span>
+                  <input type="checkbox" id="opt-formula-shield" checked>
+                </label>
+                <label class="kv-toggle-row">
+                  <span>Strict Aadhaar Verhoeff</span>
+                  <input type="checkbox" id="opt-aadhaar-verhoeff" checked>
+                </label>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- 3. Detection Metrics: Exactly 8 Cards in Strict Order -->
+        <section class="kv-metrics-grid" aria-label="PII Detection Metrics">
+          <!-- 1. Emails -->
+          <div class="kv-metric-card" id="card-metric-email">
+            <div class="kv-metric-header">
+              <span class="kv-metric-lbl">Emails</span>
+              <span class="kv-metric-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+            </div>
+            <div class="kv-metric-val tabular-nums" id="stat-email">0</div>
+          </div>
+
+          <!-- 2. Phones -->
+          <div class="kv-metric-card" id="card-metric-phone">
+            <div class="kv-metric-header">
+              <span class="kv-metric-lbl">Phones</span>
+              <span class="kv-metric-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </span>
+            </div>
+            <div class="kv-metric-val tabular-nums" id="stat-phone">0</div>
+          </div>
+
+          <!-- 3. IPv4 -->
+          <div class="kv-metric-card" id="card-metric-ipv4">
+            <div class="kv-metric-header">
+              <span class="kv-metric-lbl">IPv4</span>
+              <span class="kv-metric-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="12" x="4" y="4" rx="2"/><line x1="2" x2="22" y1="20" y2="20"/><line x1="12" x2="12" y1="16" y2="20"/></svg>
+              </span>
+            </div>
+            <div class="kv-metric-val tabular-nums" id="stat-ipv4">0</div>
+          </div>
+
+          <!-- 4. PAN -->
+          <div class="kv-metric-card" id="card-metric-pan">
+            <div class="kv-metric-header">
+              <span class="kv-metric-lbl">PAN</span>
+              <span class="kv-metric-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M9 9h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+              </span>
+            </div>
+            <div class="kv-metric-val tabular-nums" id="stat-pan">0</div>
+          </div>
+
+          <!-- 5. Aadhaar -->
+          <div class="kv-metric-card" id="card-metric-aadhaar">
+            <div class="kv-metric-header">
+              <span class="kv-metric-lbl">Aadhaar</span>
+              <span class="kv-metric-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 0 0-10 10c0 5.52 4.48 10 10 10s10-4.48 10-10A10 10 0 0 0 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+              </span>
+            </div>
+            <div class="kv-metric-val tabular-nums" id="stat-aadhaar">0</div>
+          </div>
+
+          <!-- 6. Valid Cards -->
+          <div class="kv-metric-card" id="card-metric-cards">
+            <div class="kv-metric-header">
+              <span class="kv-metric-lbl">Valid Cards</span>
+              <span class="kv-metric-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+              </span>
+            </div>
+            <div class="kv-metric-val tabular-nums" id="stat-cards">0</div>
+          </div>
+
+          <!-- 7. Luhn-Rejected Candidates (Distinct Amber Treatment) -->
+          <div class="kv-metric-card amber" id="card-metric-luhn">
+            <div class="kv-metric-header">
+              <span class="kv-metric-lbl">Luhn-Rejected</span>
+              <span class="kv-metric-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+              </span>
+            </div>
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span class="kv-metric-val tabular-nums" id="stat-luhn-rejected">0</span>
+              <span class="kv-metric-badge-rej">Rejected</span>
             </div>
           </div>
 
-        </aside>
-
-        <!-- Main Redaction Workspace Area (Immediately Visible Above The Fold) -->
-        <section class="workspace-main" aria-label="Redaction Workspace">
-
-          <!-- Slim Workspace Toolbar -->
-          <div class="workspace-toolbar">
-            <div class="toolbar-left-actions">
-              <div id="drop-zone" class="compact-drop-zone" tabindex="0" role="button" aria-label="Upload File">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/>
-                  <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                <span>Upload .txt / .csv</span>
-                <input type="file" id="file-input" accept=".txt,.csv,text/plain,text/csv" style="display: none;">
-              </div>
-              <button id="btn-load-sample" class="btn btn-secondary">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                </svg>
-                <span>Load Sample Data</span>
-              </button>
-              <button id="btn-run-redact" class="btn btn-primary btn-shiny">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  <path d="m9 12 2 2 4-4"/>
-                </svg>
-                <span>Redact</span>
-              </button>
+          <!-- 8. Total Redacted (Emphasized Emerald) -->
+          <div class="kv-metric-card emerald" id="card-metric-total">
+            <div class="kv-metric-header">
+              <span class="kv-metric-lbl">Total Redacted</span>
+              <span class="kv-metric-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              </span>
             </div>
+            <div class="kv-metric-val tabular-nums" id="stat-total-masked">0</div>
+          </div>
+        </section>
 
-            <div class="toolbar-info">
-              <span class="info-item">Format: <strong id="source-format-label" class="status-pill">Raw Text</strong></span>
-              <span class="info-item">Length: <strong id="char-count" class="mono-badge">0 chars</strong></span>
+        <!-- 4. Dual-Pane Workbench -->
+        <section class="kv-workbench-section" aria-label="Dual-Pane Editor">
+          <div class="kv-workbench-header">
+            <span class="kv-workbench-label">Workbench • Dual-Pane Inspector</span>
+            <div class="sync-indicator">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+              </svg>
+              <span>Synchronized scrolling</span>
             </div>
           </div>
 
-          <!-- Dual Editor Panels (Equal 1fr 1fr Grid) -->
-          <div class="editors-grid">
-            <div class="editor-card">
-              <div class="editor-header">
-                <span class="editor-title">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                  </svg>
-                  <span>Source Input</span>
-                </span>
-                <button id="btn-clear-input" class="btn btn-secondary btn-micro" title="Clear input text">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                  </svg>
-                  <span>Clear</span>
-                </button>
+          <div class="kv-panes-grid">
+            <!-- Left Pane: Original Input -->
+            <div class="kv-pane">
+              <div class="kv-pane-header">
+                <div class="kv-pane-meta">
+                  <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted);"></span>
+                  <span class="kv-pane-title">Original Input</span>
+                  <span class="kv-pane-badge" id="line-count-badge">12 lines</span>
+                </div>
+                <div class="kv-pane-actions">
+                  <button id="btn-clear-input" class="btn-micro" type="button" title="Clear input text">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <span>Clear</span>
+                  </button>
+                </div>
               </div>
-              <textarea id="input-text" class="editor-textarea" placeholder="Paste sensitive text or CSV here...
+              <div class="kv-editor-container">
+                <div class="kv-gutter" id="pane-original-gutter" aria-hidden="true">01
+02
+03
+04
+05
+06
+07
+08
+09
+10
+11
+12</div>
+                <textarea id="input-text" class="kv-textarea" spellcheck="false" placeholder="Paste sensitive text or CSV here...
 Example:
 Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +91 9876543210"></textarea>
+              </div>
             </div>
 
-            <div class="editor-card">
-              <div class="editor-header">
-                <span class="editor-title">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                  </svg>
-                  <span>Redacted Output</span>
-                </span>
-                <div style="display: flex; gap: 0.35rem;">
-                  <button id="btn-copy-output" class="btn btn-shiny btn-micro" title="Copy redacted text to clipboard">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                    </svg>
+            <!-- Right Pane: Redacted Output -->
+            <div class="kv-pane">
+              <div class="kv-pane-header">
+                <div class="kv-pane-meta">
+                  <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--emerald);"></span>
+                  <span class="kv-pane-title">Redacted Output</span>
+                  <span class="kv-mode-badge" id="stat-active-mode">FULL MASK</span>
+                </div>
+                <div class="kv-pane-actions">
+                  <button id="btn-copy-output" class="btn-micro" type="button" title="Copy redacted output">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                     <span>Copy</span>
                   </button>
                 </div>
               </div>
-              <textarea id="output-text" class="editor-textarea" readonly placeholder="Redacted output will appear here automatically..."></textarea>
+              <div class="kv-editor-container">
+                <div class="kv-gutter" id="pane-redacted-gutter" aria-hidden="true">01
+02
+03
+04
+05
+06
+07
+08
+09
+10
+11
+12</div>
+                <textarea id="output-text" class="kv-textarea" spellcheck="false" readonly placeholder="Redacted output will appear here automatically..."></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Inline Diff Preview & 6. Findings Summary -->
+        <section class="kv-bottom-grid">
+          <!-- Inline Diff Preview (7 cols) -->
+          <div class="kv-diff-card">
+            <div class="kv-diff-header">
+              <div class="kv-diff-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 9v12"/><path d="M18 9a9 9 0 0 0-9 9"/></svg>
+                <span>Inline Diff Preview</span>
+                <span id="diff-status-label" style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); margin-left: 6px;">No modifications</span>
+              </div>
+              <div class="kv-diff-legend">
+                <span class="legend-item"><span class="legend-dot removed"></span><span>Removed</span></span>
+                <span class="legend-item"><span class="legend-dot replaced"></span><span>Replaced with</span></span>
+                <span class="legend-item"><span class="legend-dot unchanged"></span><span>Unchanged</span></span>
+              </div>
+            </div>
+            <div class="kv-diff-body" id="diff-output">
+              <span class="diff-unchanged">Input text above to see side-by-side safe redaction diff...</span>
             </div>
           </div>
 
-          <!-- Bottom Split Inspectors (Diff View & Findings Table) -->
-          <div class="inspectors-grid">
-
-            <!-- Safe Visual Diff -->
-            <div class="inspector-card">
-              <div class="inspector-header">
-                <span class="inspector-title">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="18" cy="18" r="3"/>
-                    <circle cx="6" cy="6" r="3"/>
-                    <path d="M6 9v12"/>
-                    <path d="M18 9a9 9 0 0 0-9 9"/>
-                  </svg>
-                  <span>Safe Visual Diff (XSS-Inert TextNodes)</span>
-                </span>
-                <span id="diff-status-label" class="header-hint">No modifications</span>
+          <!-- Findings Summary (5 cols) -->
+          <div class="kv-findings-card">
+            <div class="kv-findings-header">
+              <div class="kv-findings-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <span>Findings (<span id="findings-count-badge">0</span>)</span>
               </div>
-              <div id="diff-output" class="diff-container">
-                <span class="diff-unchanged">Input text above to see side-by-side safe redaction diff...</span>
-              </div>
+              <span class="kv-pane-badge" style="color: var(--emerald-fg);">No raw values stored</span>
             </div>
 
-            <!-- Detected Findings Table -->
-            <div class="inspector-card">
-              <div class="inspector-header">
-                <span class="inspector-title">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="8" y1="6" x2="21" y2="6"/>
-                    <line x1="8" y1="12" x2="21" y2="12"/>
-                    <line x1="8" y1="18" x2="21" y2="18"/>
-                    <line x1="3" y1="6" x2="3.01" y2="6"/>
-                    <line x1="3" y1="12" x2="3.01" y2="12"/>
-                    <line x1="3" y1="18" x2="3.01" y2="18"/>
-                  </svg>
-                  <span>Detected Findings (<span id="findings-count-badge" class="count-highlight">0</span>)</span>
-                </span>
-                <span class="header-hint">Resolved spans [start, end)</span>
-              </div>
-              <div class="table-scroll-container">
-                <table class="findings-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Type</th>
-                      <th>Span [Start, End)</th>
-                      <th>Status</th>
-                      <th>Redacted Value</th>
-                    </tr>
-                  </thead>
-                  <tbody id="findings-tbody">
-                    <tr>
-                      <td colspan="5" class="empty-table-cell">No PII findings detected in current input.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div class="kv-findings-callout">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>Rejected: failed Luhn validation, not counted as valid cards.</span>
             </div>
 
+            <div class="kv-table-scroll">
+              <table class="findings-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Span [Start, End)</th>
+                    <th>Status</th>
+                    <th>Redacted Value</th>
+                  </tr>
+                </thead>
+                <tbody id="findings-tbody">
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No PII findings detected in current input.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer Microline -->
+        <footer class="kv-footer-micro">
+          Processed locally in your browser. No uploads. No tracking. No storage of your data.
+        </footer>
+
+      </div>
+    </div>
+
+    <!-- ========================================================
+         SCREEN B: SELF-TEST SUITE TAB
+         ======================================================== -->
+    <div id="tab-selftest" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-selftest">
+      <div class="kv-selftest-container">
+
+        <!-- Header Area -->
+        <section class="kv-section-header">
+          <div>
+            <div class="kv-header-meta">01 / Verification Engine</div>
+            <h1 class="kv-page-title">Self-Test Suite</h1>
+            <p class="kv-page-sub">61 automated test cases run locally in your browser</p>
+          </div>
+          <div class="flex items-center gap-space-md">
+            <button id="btn-run-tests" class="btn-redact" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span>Run All Tests</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Telemetry & Progress Overview -->
+        <section class="kv-telemetry-grid">
+          <!-- Progress & Chips Card -->
+          <div class="kv-telemetry-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+                <span>Execution Progress</span>
+              </span>
+              <span class="tabular-nums" style="font-family: var(--font-mono); color: var(--text-primary);" id="progress-label">0 / 61</span>
+            </div>
+
+            <!-- Progress Track -->
+            <div class="kv-progress-track">
+              <div id="progress-bar-pass" class="kv-progress-fill-pass" style="width: 0%;"></div>
+              <div id="progress-bar-fail" class="kv-progress-fill-fail" style="width: 0%;"></div>
+            </div>
+
+            <!-- Summary Chips -->
+            <div class="kv-chips-row">
+              <div class="kv-chip">
+                <span style="color: var(--text-secondary);">Total</span>
+                <span class="tabular-nums" id="metric-total">61</span>
+              </div>
+              <div class="kv-chip passed">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Passed</span>
+                <span class="tabular-nums" id="metric-passed">0</span>
+              </div>
+              <div class="kv-chip failed">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <span>Failed</span>
+                <span class="tabular-nums" id="metric-failed">0</span>
+              </div>
+              <div class="kv-chip" style="margin-left: auto;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Duration</span>
+                <span class="tabular-nums" id="metric-duration">0ms</span>
+              </div>
+            </div>
           </div>
 
+          <!-- Suite Reliability / Latency Visual Card -->
+          <div class="kv-telemetry-card" style="flex-direction: row; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em;">Suite Reliability</div>
+              <div style="font-size: 28px; font-weight: 600; color: var(--emerald-fg); font-family: var(--font-mono); margin: 4px 0;" id="reliability-rate-label">--%</div>
+              <div style="font-size: 13px; color: var(--text-secondary);" id="test-runner-status">Ready to execute locally</div>
+            </div>
+            <!-- Donut Ring (Measured Real Result) -->
+            <div style="position: relative; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+              <svg width="72" height="72" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--surface-0)" stroke-width="3.5"/>
+                <circle id="donut-circle" cx="18" cy="18" r="15.5" fill="none" stroke="var(--emerald)" stroke-width="3.5" stroke-dasharray="0 97.4" stroke-linecap="round"/>
+              </svg>
+              <span id="donut-text" style="position: absolute; font-family: var(--font-mono); font-size: 10px; color: var(--text-primary);">0/61</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Filter & Search Controls -->
+        <section class="kv-filter-bar">
+          <div class="kv-search-wrapper">
+            <svg class="kv-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="test-search" class="kv-search-input" type="text" placeholder="Filter by test name or category (e.g. luhn, pan, ipv4)...">
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
+              <input type="checkbox" id="failures-only-toggle" style="accent-color: var(--red);">
+              <span>Show failures only</span>
+            </label>
+            <div style="display: flex; gap: 6px;">
+              <button id="expand-all-btn" class="btn-micro" type="button">Expand all</button>
+              <button id="collapse-all-btn" class="btn-micro" type="button">Collapse all</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Test Results List / Groups -->
+        <section class="kv-test-groups" id="test-results-list" role="region" aria-live="polite">
+          <div style="padding: 2.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; background: var(--surface-1); border: 1px solid var(--border-hairline); border-radius: var(--radius-lg);">
+            Click <strong>"Run All Tests"</strong> to execute the full deterministic verification suite (61 tests).
+          </div>
         </section>
 
       </div>
     </div>
 
-    <!-- 2. ANALYTICS & LOGS VIEW -->
+    <!-- ========================================================
+         SCREEN C: PRIVACY & AUDIT LOGS TAB
+         ======================================================== -->
     <div id="tab-analytics" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-analytics">
-      <div class="analytics-container">
-        <div class="pane-header-row">
-          <div>
-            <h2 class="pane-title">Privacy Analytics & Operational Telemetry</h2>
-            <p class="pane-subtitle">
-              Non-sensitive execution metrics and local transient audit logs. Zero raw PII recorded.
-            </p>
-          </div>
-          <div class="pane-actions">
-            <button id="btn-clear-logs" class="btn btn-secondary">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-              <span>Clear Logs</span>
-            </button>
-            <button id="btn-export-logs-pane" class="btn btn-shiny">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              <span>Export JSON Log</span>
-            </button>
-          </div>
-        </div>
+      <div class="kv-logs-container">
 
-        <!-- Analytics Cards -->
-        <div class="analytics-grid">
-          <div class="analytics-card">
-            <span class="analytics-card-title">Entity Distribution</span>
-            <div class="analytics-card-content" id="analytics-distribution">
-              <div class="stat-row"><span>Credit Cards:</span><strong id="stat-cards">0</strong></div>
-              <div class="stat-row"><span>PAN Identifiers:</span><strong id="stat-pan">0</strong></div>
-              <div class="stat-row"><span>Aadhaar Numbers:</span><strong id="stat-aadhaar">0</strong></div>
-              <div class="stat-row"><span>IPv4 Addresses:</span><strong id="stat-ipv4">0</strong></div>
-              <div class="stat-row"><span>Phone Numbers:</span><strong id="stat-phone">0</strong></div>
-              <div class="stat-row"><span>Email Addresses:</span><strong id="stat-email">0</strong></div>
+        <!-- Top Asymmetric Grid: Architecture Summary + Audit Guarantee -->
+        <section style="display: grid; grid-template-columns: 7fr 5fr; gap: var(--gutter);">
+          <!-- Privacy Architecture Summary -->
+          <div class="kv-arch-summary">
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--cyan); letter-spacing: 0.08em; margin-bottom: 4px;">01 / Architecture</div>
+              <h2 style="font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Privacy Architecture Summary</h2>
+              <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                All pattern matching, Luhn checksum validation, and token redaction execute strictly inside your browser's local memory. Nothing is transmitted over the network, and no input text, redacted output, or session state is ever stored on disk or remote servers.
+              </p>
+            </div>
+
+            <!-- 3-Step Inline Diagram -->
+            <div class="kv-diagram-3step">
+              <div class="kv-diagram-step">
+                <div class="kv-diagram-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div>
+                  <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">INPUT</div>
+                  <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">Your text</div>
+                </div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+
+              <div class="kv-diagram-step" style="background: var(--cyan-bg); padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--cyan-border);">
+                <div class="kv-diagram-icon cyan">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="9" x2="9" y1="3" y2="21"/><line x1="15" x2="15" y1="3" y2="21"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="3" x2="21" y1="15" y2="15"/></svg>
+                </div>
+                <div>
+                  <div style="font-family: var(--font-mono); font-size: 10px; color: var(--cyan);">LOCAL ENGINE</div>
+                  <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">Browser (detect, validate, redact)</div>
+                </div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+
+              <div class="kv-diagram-step">
+                <div class="kv-diagram-icon emerald">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
+                <div>
+                  <div style="font-family: var(--font-mono); font-size: 10px; color: var(--emerald-fg);">SANITIZED</div>
+                  <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">Your output</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="analytics-card">
-            <span class="analytics-card-title">Session Telemetry</span>
-            <div class="analytics-card-content">
-              <div class="stat-row"><span>Total Entities Masked:</span><strong id="stat-total-masked" style="color: var(--accent-cyan);">0</strong></div>
-              <div class="stat-row"><span>Characters Processed:</span><strong id="stat-chars-processed">0</strong></div>
-              <div class="stat-row"><span>Current Execution Mode:</span><strong id="stat-active-mode" style="color: var(--accent-emerald);">FULL MASK</strong></div>
-              <div class="stat-row"><span>Pseudonym Namespace:</span><strong>Active (Run-Scoped)</strong></div>
-              <div class="stat-row"><span>Storage Mode:</span><strong style="color: var(--accent-emerald);">0% Persistent (RAM Only)</strong></div>
+          <!-- Prominent Callout & Telemetry -->
+          <div style="display: flex; flex-direction: column; gap: var(--gutter);">
+            <div class="kv-audit-guarantee">
+              <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--emerald-bg); color: var(--emerald-fg); display: flex; align-items: center; justify-content: center; shrink: 0;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div>
+                <div style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--emerald-fg); letter-spacing: 0.08em;">Audit Guarantee</div>
+                <h3 style="font-size: 16px; font-weight: 600; color: var(--text-primary); margin: 3px 0;">Activity logs never contain raw PII.</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                  Events record only timestamps, operation types, active redaction modes, and aggregate item counts.
+                </p>
+              </div>
+            </div>
+
+            <!-- Local Telemetry Strip -->
+            <div class="kv-telemetry-tiles">
+              <div class="kv-telemetry-tile">
+                <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">NETWORK OUT</span>
+                <span class="tabular-nums" style="font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: var(--emerald-fg);">0 Bytes</span>
+              </div>
+              <div class="kv-telemetry-tile">
+                <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">PERSISTENCE</span>
+                <span style="font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: var(--text-primary);">RAM Only</span>
+              </div>
+              <div class="kv-telemetry-tile">
+                <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">LOGGED EVENTS</span>
+                <span class="tabular-nums" style="font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: var(--cyan);" id="log-count-metric">0</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Privacy-Safe Activity Log -->
+        <section class="kv-log-card">
+          <div class="kv-log-header">
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--cyan); letter-spacing: 0.08em;">02 / Telemetry</div>
+              <h2 style="font-size: 18px; font-weight: 600; color: var(--text-primary);">Privacy-Safe Activity Log</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="display: flex; gap: 4px; background: var(--surface-0); padding: 3px; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+                <button class="btn-micro log-filter-btn active" data-filter="all" type="button">All</button>
+                <button class="btn-micro log-filter-btn" data-filter="redaction" type="button">Redaction</button>
+                <button class="btn-micro log-filter-btn" data-filter="mode" type="button">Mode</button>
+                <button class="btn-micro log-filter-btn" data-filter="session" type="button">Session</button>
+              </div>
+              <button id="btn-clear-logs" class="btn-secondary" type="button">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <span>Clear Logs</span>
+              </button>
+              <div style="display: none;">
+                <button id="btn-export-logs">Export Logs</button>
+                <button id="btn-export-logs-pane">Export Logs Pane</button>
+                <span id="stat-chars-processed">0</span>
+              </div>
             </div>
           </div>
 
-          <div class="analytics-card">
-            <span class="analytics-card-title">Integrity Verification</span>
-            <div class="analytics-card-content">
-              <div class="stat-row"><span>Outbound Network Calls:</span><strong style="color: var(--accent-emerald);">0 (Verified)</strong></div>
-              <div class="stat-row"><span>DOM Injection Safety:</span><strong style="color: var(--accent-emerald);">XSS-Immune (TextNodes)</strong></div>
-              <div class="stat-row"><span>CSV Parser:</span><strong style="color: var(--accent-cyan);">RFC-4180 State Machine</strong></div>
-              <div class="stat-row"><span>Formula Injection Defense:</span><strong style="color: var(--accent-emerald);">Enabled (')</strong></div>
-              <div class="stat-row"><span>Aadhaar Checksum:</span><strong style="color: var(--accent-cyan);">Verhoeff D5 Checksum</strong></div>
+          <!-- Monospace Timestamped Event List -->
+          <div class="kv-log-list" id="log-terminal" role="log" aria-live="polite">
+            <div class="log-line" style="color: var(--text-muted); font-size: 12px; padding: 12px; text-align: center;" id="activity-log-empty">
+              No activity events in current local session.
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- Log Terminal -->
-        <div class="inspector-card" style="flex: 1; min-height: 240px;">
-          <div class="inspector-header">
-            <span class="inspector-title">Local Transient Activity Log</span>
-            <span class="header-hint">Buffered in JavaScript heap memory (Max 500 entries)</span>
-          </div>
-          <div class="log-terminal" id="log-terminal" role="log" aria-live="polite">
-            <!-- Real-time log entries inserted here -->
-          </div>
-        </div>
+        <!-- Secondary Section: Security Documentation (Collapsible) -->
+        <details class="kv-doc-details" id="tab-docs" open>
+          <summary class="kv-doc-summary" id="toggle-docs-btn">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--surface-3); color: var(--cyan); display: flex; align-items: center; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+              </div>
+              <div>
+                <div style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--text-muted);">03 / Reference</div>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--text-primary);">Security Documentation</h3>
+              </div>
+            </div>
+            <button id="tab-btn-docs" class="btn-micro" type="button">Collapse</button>
+          </summary>
+          <div class="kv-doc-content" id="security-docs-panel">
+            <div>
+              <h3>1. Zero-Leak Execution Model</h3>
+              <p>
+                All operations occur strictly within transient JavaScript heap memory inside the local web browser.
+                The codebase contains zero calls to <code>fetch()</code>, <code>XMLHttpRequest</code>, <code>WebSocket</code>,
+                <code>EventSource</code>, or <code>navigator.sendBeacon()</code>. Zero analytics trackers or external CDN runtime scripts exist.
+              </p>
 
-        <!-- Security Architecture Spec (Secondary Section Preserving id="tab-docs" & id="tab-btn-docs") -->
-        <div id="tab-docs" class="inspector-card spec-embedded-card">
-          <div class="inspector-header">
-            <span class="inspector-title">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
-                <path d="M6 6h10"/>
-                <path d="M6 10h10"/>
-              </svg>
-              <span>Security Specification & Architecture</span>
-            </span>
-            <button id="tab-btn-docs" class="btn btn-secondary btn-micro" title="Verified Architecture">Verified Spec</button>
-          </div>
-          <article class="doc-container">
-            <h1>KAVACH Engineering & Privacy Architecture</h1>
-            <p>KAVACH is a zero-leak, 100% client-side privacy engine designed to sanitize PII locally in user memory before any data is exported or transferred.</p>
+              <h3>2. Deterministic Validation Engine</h3>
+              <ul>
+                <li><strong>Credit Cards:</strong> 13–19 digit candidate extraction with strict ISO/IEC 7812-1 modulus 10 Luhn checksum validation. Rejects corrupted numbers, 12-digit and 20-digit strings, and embedded IDs.</li>
+                <li><strong>Indian PAN:</strong> <code>[A-Z]{5}[0-9]{4}[A-Z]</code> validation with strict left and right word boundary isolation.</li>
+                <li><strong>IPv4 Addresses:</strong> Exactly 4 octets, each in [0, 255]. Rejects negative octets and software version strings.</li>
+                <li><strong>Indian Aadhaar:</strong> 12-digit candidate validation with Dihedral Group D5 Verhoeff checksum algorithm.</li>
+                <li><strong>Indian Mobile:</strong> 10-digit mobile detection starting with 6–9 with prefix normalization (<code>+91</code>, <code>0</code>), rejecting dates and timestamps.</li>
+                <li><strong>International Phone:</strong> E.164 boundary constraints [8, 15] digits.</li>
+                <li><strong>Email:</strong> RFC 5322 syntax validation with automatic trailing sentence punctuation trimming.</li>
+              </ul>
+            </div>
 
-            <h2>1. Zero-Leak Execution Model</h2>
-            <p>
-              All operations occur strictly within transient JavaScript heap memory inside the local web browser.
-              The codebase contains zero calls to <code>fetch()</code>, <code>XMLHttpRequest</code>, <code>WebSocket</code>,
-              <code>EventSource</code>, or <code>navigator.sendBeacon()</code>. Zero analytics trackers or external CDN runtime scripts exist.
-            </p>
+            <div>
+              <h3>3. RFC-4180 CSV Engine & Injection Defense</h3>
+              <p>
+                KAVACH features a state-machine CSV parser that natively supports quoted commas, escaped double quotes (<code>""</code>),
+                and embedded multiline strings. It enforces an explicit CSV formula injection shield, prepending <code>'</code>
+                to any cell beginning with <code>=, +, -, @, \t, \r</code>.
+              </p>
 
-            <h2>2. Deterministic Validation Engine</h2>
-            <ul>
-              <li><strong>Credit Cards:</strong> 13–19 digit candidate extraction with strict ISO/IEC 7812-1 modulus 10 Luhn checksum validation. Rejects corrupted numbers, 12-digit and 20-digit strings, and embedded IDs.</li>
-              <li><strong>Indian PAN:</strong> <code>[A-Z]{5}[0-9]{4}[A-Z]</code> validation with strict left and right word boundary isolation.</li>
-              <li><strong>IPv4 Addresses:</strong> Exactly 4 octets, each in [0, 255]. Rejects negative octets and software version strings (e.g. <code>v1.2.3.4</code>, <code>release-2.3.4.5</code>).</li>
-              <li><strong>Indian Aadhaar:</strong> 12-digit candidate validation with Dihedral Group D5 Verhoeff checksum algorithm.</li>
-              <li><strong>Indian Mobile:</strong> 10-digit mobile detection starting with 6–9 with prefix normalization (<code>+91</code>, <code>0</code>), rejecting dates and timestamps.</li>
-              <li><strong>International Phone:</strong> E.164 boundary constraints [8, 15] digits.</li>
-              <li><strong>Email:</strong> RFC 5322 syntax validation with automatic trailing sentence punctuation trimming.</li>
-            </ul>
-
-            <h2>3. RFC-4180 CSV Engine & Injection Defense</h2>
-            <p>
-              KAVACH features a state-machine CSV parser that natively supports quoted commas, escaped double quotes (<code>""</code>),
-              and embedded multiline strings. It enforces an explicit CSV formula injection shield, prepending <code>'</code>
-              to any cell beginning with <code>=, +, -, @, \t, \r</code>.
-            </p>
-
-            <h2>4. Deterministic Overlap Resolution</h2>
-            <p>
-              Candidate spans are sorted by <code>start ascending</code>, <code>length descending</code>, and deterministic priority tie-breaking.
-              Half-open intervals <code>[start, end)</code> guarantee that no character is ever double-redacted.
-            </p>
-          </article>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- 3. BUILT-IN SELF-TEST RUNNER VIEW -->
-    <div id="tab-selftest" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-selftest">
-      <div class="self-test-container">
-
-        <div class="pane-header-row">
-          <div>
-            <h2 class="pane-title">Automated Verification Suite</h2>
-            <p class="pane-subtitle">
-              Directly executes production detection, Luhn/Verhoeff checksums, RFC-4180 CSV, and privacy logic (Categories A through K).
-            </p>
-          </div>
-          <button id="btn-run-tests" class="btn btn-shiny" style="padding: 0.5rem 1.25rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polygon points="5 3 19 12 5 21 5 3"/>
-            </svg>
-            <span>Run All 61 Self-Tests</span>
-          </button>
-        </div>
-
-        <!-- Metrics Cards -->
-        <div class="metrics-row">
-          <div class="metric-card">
-            <span class="metric-val" id="metric-total">0</span>
-            <span class="metric-lbl">Total Executed</span>
-          </div>
-          <div class="metric-card">
-            <span class="metric-val" id="metric-passed" style="color: var(--accent-emerald);">0</span>
-            <span class="metric-lbl">Passed</span>
-          </div>
-          <div class="metric-card">
-            <span class="metric-val" id="metric-failed" style="color: var(--accent-rose);">0</span>
-            <span class="metric-lbl">Failed</span>
-          </div>
-          <div class="metric-card">
-            <span class="metric-val" id="metric-duration" style="color: var(--accent-cyan);">0ms</span>
-            <span class="metric-lbl">Suite Duration</span>
-          </div>
-        </div>
-
-        <!-- Test Results Card -->
-        <div class="test-list-card">
-          <div class="inspector-header">
-            <span class="inspector-title">Test Verification Checklist (Categories A through K)</span>
-            <span id="test-runner-status" class="header-hint">Ready to execute</span>
-          </div>
-          <div class="test-scroll-area" id="test-results-list">
-            <div style="padding: 2.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
-              Click <strong>"Run All 61 Self-Tests"</strong> to execute the full deterministic verification suite.
+              <h3>4. Deterministic Overlap Resolution</h3>
+              <p>
+                Candidate spans are sorted by <code>start ascending</code>, <code>length descending</code>, and deterministic priority tie-breaking.
+                Half-open intervals <code>[start, end)</code> guarantee that no character is ever double-redacted.
+              </p>
             </div>
           </div>
-        </div>
+        </details>
 
       </div>
     </div>
