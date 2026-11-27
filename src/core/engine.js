@@ -17,6 +17,9 @@ import { parseCsv, serializeCsv, processCsvCells } from './csv-parser.js';
 import { ValidationStatus, PiiType } from './types.js';
 import { logger } from './logger.js';
 
+// Shortest valid PII across all supported types is 6 chars (e.g., "a@b.cd")
+const MIN_PII_CANDIDATE_LENGTH = 6;
+
 /**
  * Processes plain text: detects, validates, resolves overlaps, and redacts.
  *
@@ -26,7 +29,8 @@ import { logger } from './logger.js';
  * @param {string} [options.redactionMode]
  * @param {import('./redactor.js').Pseudonymizer} options.pseudonymizer
  * @param {boolean} [options.requireVerhoeff=true]
- * @param {Object} [options.customMasks]
+ * @param {Record<string, string>} [options.customMasks]
+ * @param {boolean} [options.skipLog=false] - Suppress per-call logging (used by batch CSV cell processing)
  * @returns {{
  *   redactedText: string,
  *   findings: Array<import('./types.js').PiiFinding>,
@@ -35,9 +39,9 @@ import { logger } from './logger.js';
  * }}
  */
 export function processText(text, options) {
-  if (typeof text !== 'string' || text.length === 0) {
+  if (typeof text !== 'string' || text.length < MIN_PII_CANDIDATE_LENGTH) {
     return {
-      redactedText: '',
+      redactedText: typeof text === 'string' ? text : '',
       findings: [],
       rejectedCandidates: [],
       countsByType: {}
@@ -88,7 +92,7 @@ export function processText(text, options) {
   const redactedText = redactText(
     text,
     resolvedFindings,
-    options.redactionMode,
+    options.redactionMode || 'FULL_MASK',
     options.pseudonymizer,
     options.customMasks
   );
@@ -100,14 +104,16 @@ export function processText(text, options) {
     countsByType[f.type] = (countsByType[f.type] || 0) + 1;
   }
 
-  // Log safe summary
-  logger.log({
-    operation: 'DETECTION',
-    category: 'TEXT',
-    count: resolvedFindings.length,
-    status: 'SUCCESS',
-    details: `Processed text (${text.length} chars). Detected ${resolvedFindings.length} valid PII findings.`
-  });
+  // Log safe summary unless suppressed by batch caller (e.g. processCsv)
+  if (!options.skipLog) {
+    logger.log({
+      operation: 'DETECTION',
+      category: 'TEXT',
+      count: resolvedFindings.length,
+      status: 'SUCCESS',
+      details: `Processed text (${text.length} chars). Detected ${resolvedFindings.length} valid PII findings.`
+    });
+  }
 
   return {
     redactedText,
@@ -127,7 +133,7 @@ export function processText(text, options) {
  * @param {import('./redactor.js').Pseudonymizer} options.pseudonymizer
  * @param {boolean} [options.sanitizeFormulas=true]
  * @param {boolean} [options.requireVerhoeff=true]
- * @param {Object} [options.customMasks]
+ * @param {Record<string, string>} [options.customMasks]
  * @returns {{
  *   redactedCsv: string,
  *   originalRows: Array<Array<string>>,
@@ -153,9 +159,15 @@ export function processCsv(csvText, options) {
   /** @type {Array<any>} */
   const allRejectedCandidates = [];
 
-  const { redactedRows, allFindings } = processCsvCells(originalRows, (cellText, row, col) => {
+  const { redactedRows, allFindings } = processCsvCells(
+    originalRows,
+    (/** @type {string} */ cellText, /** @type {number} */ row, /** @type {number} */ col) => {
+    if (!cellText || cellText.length < MIN_PII_CANDIDATE_LENGTH) {
+      return { redactedText: cellText, findings: [] };
+    }
     const result = processText(cellText, {
       ...options,
+      skipLog: true,
       // Pass the same pseudonymizer so cross-cell pseudonym consistency is maintained!
       pseudonymizer: options.pseudonymizer
     });

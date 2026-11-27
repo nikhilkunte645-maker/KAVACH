@@ -87,6 +87,16 @@ export function generatePartialMask(finding) {
   }
 }
 
+const PSEUDONYM_PREFIX_MAP = Object.freeze({
+  [PiiType.CREDIT_CARD]: 'CARD',
+  [PiiType.AADHAAR]: 'AADHAAR',
+  [PiiType.PAN]: 'PAN',
+  [PiiType.EMAIL]: 'EMAIL',
+  [PiiType.PHONE_IN]: 'PHONE',
+  [PiiType.PHONE_INTL]: 'PHONE',
+  [PiiType.IPV4]: 'IPV4'
+});
+
 /**
  * State container for consistent pseudonymization during a single processing run.
  */
@@ -115,24 +125,15 @@ export class Pseudonymizer {
    */
   getToken(type, normalizedValue) {
     const key = `${type}:${normalizedValue.toLowerCase()}`;
-    if (this.tokenMap.has(key)) {
-      return /** @type {string} */ (this.tokenMap.get(key));
+    const existing = this.tokenMap.get(key);
+    if (existing !== undefined) {
+      return existing;
     }
 
     const currentCount = (this.counters.get(type) ?? 0) + 1;
     this.counters.set(type, currentCount);
 
-    const prefixMap = {
-      [PiiType.CREDIT_CARD]: 'CARD',
-      [PiiType.AADHAAR]: 'AADHAAR',
-      [PiiType.PAN]: 'PAN',
-      [PiiType.EMAIL]: 'EMAIL',
-      [PiiType.PHONE_IN]: 'PHONE',
-      [PiiType.PHONE_INTL]: 'PHONE',
-      [PiiType.IPV4]: 'IPV4'
-    };
-
-    const prefix = prefixMap[type] || type;
+    const prefix = /** @type {Record<string, string>} */ (PSEUDONYM_PREFIX_MAP)[type] || type;
     const token = `${prefix}_${String(currentCount).padStart(2, '0')}`;
     this.tokenMap.set(key, token);
     return token;
@@ -145,7 +146,7 @@ export class Pseudonymizer {
  * @param {import('./types.js').PiiFinding} finding
  * @param {string} mode - RedactionMode
  * @param {Pseudonymizer} pseudonymizer
- * @param {Object} [customMasks]
+ * @param {Record<string, string>} [customMasks]
  * @returns {string}
  */
 export function getReplacementValue(finding, mode, pseudonymizer, customMasks = {}) {
@@ -175,32 +176,33 @@ export function getReplacementValue(finding, mode, pseudonymizer, customMasks = 
  * @param {Array<import('./types.js').PiiFinding>} resolvedFindings - Must be sorted by start ascending
  * @param {string} mode - RedactionMode
  * @param {Pseudonymizer} pseudonymizer
- * @param {Object} [customMasks]
+ * @param {Record<string, string>} [customMasks]
  * @returns {string} Redacted output text
  */
 export function redactText(sourceText, resolvedFindings, mode, pseudonymizer, customMasks = {}) {
   if (!sourceText) return '';
   if (!resolvedFindings || resolvedFindings.length === 0) return sourceText;
 
-  let result = '';
+  /** @type {Array<string>} */
+  const parts = [];
   let lastIndex = 0;
 
-  for (const finding of resolvedFindings) {
-    // Append unchanged segment before this finding
-    result += sourceText.slice(lastIndex, finding.start);
+  for (let i = 0; i < resolvedFindings.length; i++) {
+    const finding = resolvedFindings[i];
+    if (finding.start > lastIndex) {
+      parts.push(sourceText.slice(lastIndex, finding.start));
+    }
 
-    // Compute replacement
     const replacement = getReplacementValue(finding, mode, pseudonymizer, customMasks);
     finding.redactedValue = replacement;
-    result += replacement;
+    parts.push(replacement);
 
     lastIndex = finding.end;
   }
 
-  // Append remaining text
   if (lastIndex < sourceText.length) {
-    result += sourceText.slice(lastIndex);
+    parts.push(sourceText.slice(lastIndex));
   }
 
-  return result;
+  return parts.join('');
 }

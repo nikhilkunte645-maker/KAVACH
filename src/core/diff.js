@@ -77,29 +77,31 @@ export function computeDiffSegments(originalText, resolvedFindings) {
  * @param {Array<{type: string, text: string, piiType?: string}>} diffSegments
  */
 export function renderSafeDiffToDom(containerElement, diffSegments) {
-  // Clear container
   while (containerElement.firstChild) {
     containerElement.removeChild(containerElement.firstChild);
   }
 
-  for (const seg of diffSegments) {
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < diffSegments.length; i++) {
+    const seg = diffSegments[i];
     if (seg.type === 'unchanged') {
       const span = document.createElement('span');
       span.className = 'diff-unchanged';
-      span.textContent = seg.text; // Text node prevents XSS
-      containerElement.appendChild(span);
+      span.textContent = seg.text;
+      fragment.appendChild(span);
     } else if (seg.type === 'removed') {
       const del = document.createElement('del');
       del.className = 'diff-removed';
       del.title = `Original: ${seg.piiType || 'PII'}`;
-      del.textContent = seg.text; // Text node prevents XSS
-      containerElement.appendChild(del);
+      del.textContent = seg.text;
+      fragment.appendChild(del);
     } else if (seg.type === 'added') {
       const ins = document.createElement('ins');
       ins.className = 'diff-added';
       ins.title = `Masked: ${seg.piiType || 'PII'}`;
-      ins.textContent = seg.text; // Text node prevents XSS
-      containerElement.appendChild(ins);
+      ins.textContent = seg.text;
+      fragment.appendChild(ins);
     }
   }
+  containerElement.appendChild(fragment);
 }

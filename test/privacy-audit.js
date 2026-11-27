@@ -24,6 +24,11 @@ const FORBIDDEN_CODE_PATTERNS = [
   { pattern: /https?:\/\/(?!localhost|127\.0\.0\.1)[^\s"'>]+/g, name: 'External remote HTTP/HTTPS URL reference' }
 ];
 
+/**
+ * @param {string} filePath
+ * @param {string} matchStr
+ * @returns {boolean}
+ */
 function isAllowedExemption(filePath, matchStr) {
   if (filePath.endsWith('package.json') && matchStr.includes('http')) return true;
   if (filePath.endsWith('package-lock.json')) return true;
@@ -32,6 +37,11 @@ function isAllowedExemption(filePath, matchStr) {
   return false;
 }
 
+/**
+ * @param {string} dirPath
+ * @param {Array<{file: string, violation: string, match: string}>} [violations]
+ * @returns {Array<{file: string, violation: string, match: string}>}
+ */
 function scanDir(dirPath, violations = []) {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true });
 

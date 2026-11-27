@@ -7,6 +7,18 @@ import { PiiType, ValidationStatus } from './types.js';
 import { validateLuhn } from './luhn.js';
 import { validateVerhoeff } from './verhoeff.js';
 
+// Module-scoped stateless RegExps (no /g or /y flags)
+const DEFAULT_BOUNDARY_REGEX = /[a-zA-Z0-9]/;
+const IPV4_BOUNDARY_REGEX = /[0-9.]/;
+const VERSION_PREFIX_REGEX = /(?:^|[\s_/-])(?:v|ver|version|release|build)[._\s-]*$/i;
+const DATE_YYYYMMDD_REGEX = /\d{4}[-/]\d{2}[-/]\d{2}/;
+const DATE_DDMMYYYY_REGEX = /\d{2}[-/]\d{2}[-/]\d{4}/;
+const ISO_TS_REGEX = /\d{4}-\d{2}-\d{2}T\d{2}/;
+const NON_DIGITS_REGEX = /\D/g; // Used only with .replace(), stateless
+const DIGITS_ONLY_REGEX = /^\d+$/;
+const PAN_STRUCTURE_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+const INDIAN_MOBILE_REGEX = /^[6-9]\d{9}$/;
+
 /**
  * Checks if a candidate is embedded in a longer alphanumeric token in the source text.
  *
@@ -16,14 +28,12 @@ import { validateVerhoeff } from './verhoeff.js';
  * @param {RegExp} [boundaryRegex]
  * @returns {boolean} True if boundary is safe
  */
-export function isSafeWordBoundary(sourceText, start, end, boundaryRegex = /[a-zA-Z0-9]/) {
-  if (start > 0) {
-    const prevChar = sourceText[start - 1];
-    if (boundaryRegex.test(prevChar)) return false;
+export function isSafeWordBoundary(sourceText, start, end, boundaryRegex = DEFAULT_BOUNDARY_REGEX) {
+  if (start > 0 && boundaryRegex.test(sourceText[start - 1])) {
+    return false;
   }
-  if (end < sourceText.length) {
-    const nextChar = sourceText[end];
-    if (boundaryRegex.test(nextChar)) return false;
+  if (end < sourceText.length && boundaryRegex.test(sourceText[end])) {
+    return false;
   }
   return true;
 }
@@ -37,8 +47,9 @@ export function isSafeWordBoundary(sourceText, start, end, boundaryRegex = /[a-z
  * @returns {boolean} True if preceded by a version prefix
  */
 export function hasVersionPrefix(sourceText, start) {
+  if (start === 0) return false;
   const prefixWindow = sourceText.slice(Math.max(0, start - 20), start);
-  return /(?:^|[\s_/-])(?:v|ver|version|release|build)[._\s-]*$/i.test(prefixWindow);
+  return VERSION_PREFIX_REGEX.test(prefixWindow);
 }
 
 /**
@@ -52,12 +63,11 @@ export function hasVersionPrefix(sourceText, start) {
  */
 export function isPartOfDate(sourceText, start, end) {
   const contextWindow = sourceText.slice(Math.max(0, start - 5), Math.min(sourceText.length, end + 5));
-  // YYYY-MM-DD or DD-MM-YYYY or YYYY/MM/DD
-  if (/\d{4}[-/]\d{2}[-/]\d{2}/.test(contextWindow)) return true;
-  if (/\d{2}[-/]\d{2}[-/]\d{4}/.test(contextWindow)) return true;
-  // ISO timestamps with T
-  if (/\d{4}-\d{2}-\d{2}T\d{2}/.test(contextWindow)) return true;
-  return false;
+  return (
+    DATE_YYYYMMDD_REGEX.test(contextWindow) ||
+    DATE_DDMMYYYY_REGEX.test(contextWindow) ||
+    ISO_TS_REGEX.test(contextWindow)
+  );
 }
 
 /**

@@ -21,7 +21,7 @@ import { logger } from '../core/logger.js';
 /**
  * Runs all built-in self-tests.
  *
- * @param {Function} [onProgress] - Optional callback (currentResult, index, total)
+ * @param {((currentResult: TestExecutionResult, index: number, total: number) => void) | null} [onProgress] - Optional callback (currentResult, index, total)
  * @returns {Promise<{
  *   total: number,
  *   passed: number,
@@ -52,7 +52,8 @@ export async function runAllSelfTests(onProgress = null) {
     } catch (err) {
       passed = false;
       // Sanitize error message to ensure no accidental sensitive data leaks
-      failureReason = String(err?.message || 'Unexpected exception during execution')
+      const errMsg = err instanceof Error ? err.message : 'Unexpected exception during execution';
+      failureReason = String(errMsg || 'Unexpected exception during execution')
         .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[REDACTED_EMAIL]')
         .replace(/\b(?:\d[ -]?){12,18}\d\b/g, '[REDACTED_NUMBER]');
     }

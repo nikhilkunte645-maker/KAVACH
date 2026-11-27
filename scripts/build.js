@@ -20,6 +20,10 @@ if (fs.existsSync(DIST_DIR)) {
 fs.mkdirSync(DIST_DIR, { recursive: true });
 
 // 2. Copy production assets
+/**
+ * @param {string} src
+ * @param {string} dest
+ */
 function copyRecursive(src, dest) {
   const stats = fs.statSync(src);
   if (stats.isDirectory()) {
@@ -35,10 +39,7 @@ function copyRecursive(src, dest) {
 const ASSETS_TO_BUILD = [
   'index.html',
   'style.css',
-  'globals.css',
-  'src',
-  'components',
-  'lib'
+  'src'
 ];
 
 for (const asset of ASSETS_TO_BUILD) {

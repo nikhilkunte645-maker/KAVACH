@@ -19,88 +19,91 @@ export function parseCsv(csvText) {
     return [];
   }
 
-  // Handle optional UTF-8 BOM
-  let text = csvText;
-  if (text.charCodeAt(0) === 0xFEFF) {
-    text = text.slice(1);
-  }
+  let i = csvText.charCodeAt(0) === 0xFEFF ? 1 : 0;
+  const len = csvText.length;
+  if (i >= len) return [];
 
+  /** @type {Array<Array<string>>} */
   const rows = [];
+  /** @type {Array<string>} */
   let currentRow = [];
-  let currentCell = '';
+  /** @type {Array<string>} */
+  let cellParts = [];
+  let segStart = i;
   let inQuotes = false;
-  let i = 0;
-  const len = text.length;
+
+  const flushCell = (/** @type {number} */ endIdx) => {
+    if (cellParts.length === 0) {
+      return csvText.slice(segStart, endIdx);
+    }
+    if (endIdx > segStart) {
+      cellParts.push(csvText.slice(segStart, endIdx));
+    }
+    const value = cellParts.join('');
+    cellParts = [];
+    return value;
+  };
 
   while (i < len) {
-    const ch = text[i];
+    const code = csvText.charCodeAt(i);
 
     if (inQuotes) {
-      if (ch === '"') {
-        // Look ahead for escaped double quote ("")
-        if (i + 1 < len && text[i + 1] === '"') {
-          currentCell += '"';
+      if (code === 34 /* " */) {
+        if (i > segStart) {
+          cellParts.push(csvText.slice(segStart, i));
+        }
+        if (i + 1 < len && csvText.charCodeAt(i + 1) === 34) {
+          cellParts.push('"');
           i += 2;
-          continue;
+          segStart = i;
         } else {
-          // Closing quote
           inQuotes = false;
           i++;
-          continue;
+          segStart = i;
         }
       } else {
-        // Any character inside quotes (including \n, \r, commas)
-        currentCell += ch;
         i++;
-        continue;
       }
     } else {
-      // Not in quotes
-      if (ch === '"') {
+      if (code === 34 /* " */) {
+        if (i > segStart) {
+          cellParts.push(csvText.slice(segStart, i));
+        }
         inQuotes = true;
         i++;
-        continue;
-      } else if (ch === ',') {
-        currentRow.push(currentCell);
-        currentCell = '';
+        segStart = i;
+      } else if (code === 44 /* , */) {
+        currentRow.push(flushCell(i));
         i++;
-        continue;
-      } else if (ch === '\r') {
-        // Check for \r\n
-        if (i + 1 < len && text[i + 1] === '\n') {
+        segStart = i;
+      } else if (code === 13 /* \r */) {
+        currentRow.push(flushCell(i));
+        rows.push(currentRow);
+        currentRow = [];
+        if (i + 1 < len && csvText.charCodeAt(i + 1) === 10 /* \n */) {
+          i += 2;
+        } else {
           i++;
         }
-        currentRow.push(currentCell);
+        segStart = i;
+      } else if (code === 10 /* \n */) {
+        currentRow.push(flushCell(i));
         rows.push(currentRow);
         currentRow = [];
-        currentCell = '';
         i++;
-        continue;
-      } else if (ch === '\n') {
-        currentRow.push(currentCell);
-        rows.push(currentRow);
-        currentRow = [];
-        currentCell = '';
-        i++;
-        continue;
+        segStart = i;
       } else {
-        currentCell += ch;
         i++;
-        continue;
       }
     }
   }
 
-  // Push trailing cell and row
-  currentRow.push(currentCell);
+  currentRow.push(flushCell(len));
   rows.push(currentRow);
 
-  // If the file ends with a trailing newline, RFC-4180 allows an empty final row;
-  // if the last row is a single empty string produced by trailing newline, handle cleanly:
   if (rows.length > 1 && rows[rows.length - 1].length === 1 && rows[rows.length - 1][0] === '') {
-    // Only pop if the original text actually ended with newline
-    const lastChar = text[text.length - 1];
-    if (lastChar === '\n' || lastChar === '\r') {
+    const lastChar = csvText.charCodeAt(len - 1);
+    if (lastChar === 10 || lastChar === 13) {
       rows.pop();
     }
   }

@@ -13,7 +13,7 @@ async function main() {
 
   let currentCategory = '';
 
-  const summary = await runAllSelfTests((result, index, total) => {
+  const summary = await runAllSelfTests((/** @type {any} */ result, /** @type {number} */ index, /** @type {number} */ total) => {
     if (result.category !== currentCategory) {
       currentCategory = result.category;
       console.log(`\n--- [${currentCategory}] ---`);

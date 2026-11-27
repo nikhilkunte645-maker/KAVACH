@@ -8,6 +8,9 @@
 </head>
 <body>
 
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="a11y-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
   <!-- Pearl Soft-Fluid Vector Background (Inline SVG, Zero Network) -->
   <div class="kv-bg" aria-hidden="true">
     <svg viewBox="0 0 1440 900" fill="none" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
@@ -142,7 +145,7 @@
   <!-- ==========================================================
        MAIN VIEWPORT CONTAINER
        ========================================================== -->
-  <main class="kv-main">
+  <main id="main-content" class="kv-main" tabindex="-1">
 
     <!-- ========================================================
          SCREEN A: WORKSPACE TAB
@@ -425,7 +428,7 @@
 10
 11
 12</div>
-                <textarea id="input-text" class="kv-textarea" spellcheck="false" placeholder="Paste sensitive text or CSV here...
+                <textarea id="input-text" class="kv-textarea" aria-label="Original input text or CSV" spellcheck="false" placeholder="Paste sensitive text or CSV here...
 Example:
 Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +91 9876543210"></textarea>
               </div>
@@ -459,7 +462,7 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
 10
 11
 12</div>
-                <textarea id="output-text" class="kv-textarea" spellcheck="false" readonly placeholder="Redacted output will appear here automatically..."></textarea>
+                <textarea id="output-text" class="kv-textarea" aria-label="Redacted output text" spellcheck="false" readonly placeholder="Redacted output will appear here automatically..."></textarea>
               </div>
             </div>
           </div>
@@ -503,6 +506,7 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
 
             <div class="kv-table-scroll">
               <table class="findings-table">
+                <caption class="sr-only">Detected PII Findings Summary</caption>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -617,7 +621,7 @@ Alice Smith, alice@example.com, 4532-0151-1283-0366, 192.168.1.1, ABCDE1234F, +9
         <section class="kv-filter-bar">
           <div class="kv-search-wrapper">
             <svg class="kv-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input id="test-search" class="kv-search-input" type="text" placeholder="Filter by test name or category (e.g. luhn, pan, ipv4)...">
+            <input id="test-search" class="kv-search-input" type="text" aria-label="Filter self-tests by name or category" placeholder="Filter by test name or category (e.g. luhn, pan, ipv4)...">
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
             <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">

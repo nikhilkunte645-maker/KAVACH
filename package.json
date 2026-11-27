@@ -9,6 +9,7 @@
     "test:self": "node test/cli-runner.js",
     "typecheck": "tsc --noEmit",
     "lint:privacy": "node test/privacy-audit.js",
+    "test:performance": "node test/performance.bench.js",
     "verify": "npm run typecheck && npm test && npm run test:self && npm run lint:privacy",
     "build": "node scripts/build.js"
   },

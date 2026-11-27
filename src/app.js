@@ -11,6 +11,29 @@ import { stateManager } from './core/state.js';
 import { runAllSelfTests } from './self-test/runner.js';
 import { getSelfTestCases } from './self-test/test-cases.js';
 
+// Centralized Application Constants
+const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
+const MAX_DIFF_PREVIEW_CHARS = 3000;
+const MAX_FINDINGS_TABLE_ROWS = 200;
+const MAX_GUTTER_LINES = 2000;
+const MAX_RENDERED_LOGS = 100;
+const INPUT_DEBOUNCE_MS = 100;
+
+let lastGutterLines = 0;
+
+/**
+ * Announces a status message to screen readers via the polite live region.
+ * @param {string} message
+ */
+function announceStatus(message) {
+  const announcer = document.getElementById('a11y-announcer');
+  if (!announcer) return;
+  announcer.textContent = '';
+  requestAnimationFrame(() => {
+    announcer.textContent = message;
+  });
+}
+
 // DOM Elements
 const tabBtns = /** @type {NodeListOf<HTMLButtonElement>} */ (document.querySelectorAll('.liquid-tab-btn'));
 const tabPanes = document.querySelectorAll('.tab-pane');
@@ -211,21 +234,43 @@ function getActiveConfig() {
 }
 
 /**
+ * Counts newline-separated lines without allocating an intermediate array.
+ * @param {string} text
+ * @returns {number}
+ */
+function countLines(text) {
+  if (!text) return 1;
+  let count = 1;
+  let pos = -1;
+  while ((pos = text.indexOf('\n', pos + 1)) !== -1) {
+    count++;
+  }
+  return count;
+}
+
+/**
  * Updates line numbers gutters for input and output textareas.
  */
 function updateLineNumbers() {
-  const origLines = (inputText?.value || '').split('\n').length;
-  const redLines = (outputText?.value || '').split('\n').length;
-  const totalLines = Math.max(origLines, redLines, 12);
-  const gutterText = Array.from({ length: totalLines }, (_, i) => String(i + 1).padStart(2, '0')).join('\n');
+  const origLines = countLines(inputText?.value || '');
+  const redLines = countLines(outputText?.value || '');
+  const lineCountBadge = document.getElementById('line-count-badge');
+  if (lineCountBadge) lineCountBadge.textContent = `${origLines} lines`;
+
+  const totalLines = Math.min(Math.max(origLines, redLines, 12), MAX_GUTTER_LINES);
+  if (totalLines === lastGutterLines) return;
+  lastGutterLines = totalLines;
+
+  const lines = new Array(totalLines);
+  for (let i = 0; i < totalLines; i++) {
+    lines[i] = i < 9 ? `0${i + 1}` : String(i + 1);
+  }
+  const gutterText = lines.join('\n');
 
   const origGutter = document.getElementById('pane-original-gutter');
   const redGutter = document.getElementById('pane-redacted-gutter');
-  const lineCountBadge = document.getElementById('line-count-badge');
-
   if (origGutter) origGutter.textContent = gutterText;
   if (redGutter) redGutter.textContent = gutterText;
-  if (lineCountBadge) lineCountBadge.textContent = `${origLines} lines`;
 }
 
 /**
@@ -354,10 +399,10 @@ export function runProcessing() {
     // Render CSV preview diff safely cell-by-cell (avoids cell-local vs raw-text offset mismatch)
     const diffSegs = [];
     let previewLen = 0;
-    for (let r = 0; r < csvResult.originalRows.length && previewLen < 3000; r++) {
+    for (let r = 0; r < csvResult.originalRows.length && previewLen < MAX_DIFF_PREVIEW_CHARS; r++) {
       const origRow = csvResult.originalRows[r];
       const redRow = csvResult.redactedRows[r] || origRow;
-      for (let c = 0; c < origRow.length && previewLen < 3000; c++) {
+      for (let c = 0; c < origRow.length && previewLen < MAX_DIFF_PREVIEW_CHARS; c++) {
         if (c > 0) diffSegs.push({ type: 'unchanged', text: ',' });
         const origCell = origRow[c];
         const redCell = redRow[c] ?? origCell;
@@ -406,7 +451,12 @@ export function runProcessing() {
 
     updateAnalyticsCards(textResult.countsByType, textResult.findings.length, luhnRejected);
 
-    const diffSegs = computeDiffSegments(text, textResult.findings);
+    // Render preview diff safely (capped at MAX_DIFF_PREVIEW_CHARS to keep DOM fast on large inputs)
+    const previewRaw = text.length > MAX_DIFF_PREVIEW_CHARS ? text.slice(0, MAX_DIFF_PREVIEW_CHARS) : text;
+    const previewFindings = text.length > MAX_DIFF_PREVIEW_CHARS
+      ? textResult.findings.filter((f) => f.end <= MAX_DIFF_PREVIEW_CHARS)
+      : textResult.findings;
+    const diffSegs = computeDiffSegments(previewRaw, previewFindings);
     if (diffOutput) renderSafeDiffToDom(diffOutput, diffSegs);
   }
 }
@@ -452,7 +502,11 @@ function renderFindingsTable(findings) {
     return;
   }
 
-  findings.forEach((f, idx) => {
+  const fragment = document.createDocumentFragment();
+  const limit = Math.min(findings.length, MAX_FINDINGS_TABLE_ROWS);
+
+  for (let idx = 0; idx < limit; idx++) {
+    const f = findings[idx];
     const tr = document.createElement('tr');
 
     // Index
@@ -488,8 +542,22 @@ function renderFindingsTable(findings) {
     tdVal.textContent = f.redactedValue || '********';
     tr.appendChild(tdVal);
 
-    findingsTbody.appendChild(tr);
-  });
+    fragment.appendChild(tr);
+  }
+
+  if (findings.length > MAX_FINDINGS_TABLE_ROWS) {
+    const trMore = document.createElement('tr');
+    const tdMore = document.createElement('td');
+    tdMore.colSpan = 5;
+    tdMore.style.textAlign = 'center';
+    tdMore.style.color = 'var(--text-muted)';
+    tdMore.style.fontSize = '12px';
+    tdMore.textContent = `Showing first ${MAX_FINDINGS_TABLE_ROWS} of ${findings.length} findings (all ${findings.length} redacted in output).`;
+    trMore.appendChild(tdMore);
+    fragment.appendChild(trMore);
+  }
+
+  findingsTbody.appendChild(fragment);
 }
 
 /**
@@ -524,7 +592,8 @@ function renderLogs(logs) {
     return;
   }
 
-  filtered.slice(-100).forEach((log) => {
+  const logFragment = document.createDocumentFragment();
+  filtered.slice(-MAX_RENDERED_LOGS).forEach((log) => {
     const row = document.createElement('div');
     row.className = 'kv-log-row';
 
@@ -557,9 +626,10 @@ function renderLogs(logs) {
 
     row.appendChild(left);
     row.appendChild(right);
-    logTerminal.appendChild(row);
+    logFragment.appendChild(row);
   });
 
+  logTerminal.appendChild(logFragment);
   logTerminal.scrollTop = logTerminal.scrollHeight;
 }
 
@@ -639,8 +709,7 @@ function loadFile(file) {
     return;
   }
 
-  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
-  if (file.size > MAX_FILE_SIZE) {
+  if (file.size > MAX_FILE_SIZE_BYTES) {
     logger.log({
       operation: 'FILE_LOAD',
       category: 'ERROR',
@@ -681,6 +750,7 @@ function renderInitialTests() {
   while (testResultsList.firstChild) testResultsList.removeChild(testResultsList.firstChild);
 
   const testCases = getSelfTestCases();
+  /** @type {Record<string, Array<any>>} */
   const categories = {};
 
   testCases.forEach((tc) => {
@@ -792,16 +862,18 @@ function initSelfTestRunner() {
 
   btnRunTests.addEventListener('click', async () => {
     btnRunTests.setAttribute('disabled', 'true');
+    if (testResultsList) testResultsList.setAttribute('aria-busy', 'true');
     if (testRunnerStatus) testRunnerStatus.textContent = 'Executing full test suite locally (61 tests)...';
     if (progressBarPass) progressBarPass.style.width = '0%';
     if (progressBarFail) progressBarFail.style.width = '0%';
 
     const testItemEls = document.querySelectorAll('.kv-test-item');
+    /** @type {Record<string, { passed: number, total: number }>} */
     const categoryPassMap = {};
     let passedCount = 0;
     let failedCount = 0;
 
-    const summary = await runAllSelfTests((res, curr, total) => {
+    const summary = await runAllSelfTests((/** @type {any} */ res, /** @type {number} */ curr, /** @type {number} */ total) => {
       if (res.passed) passedCount++;
       else failedCount++;
 
@@ -855,6 +927,8 @@ function initSelfTestRunner() {
         : `${summary.failed} tests failed!`;
     }
     applyTestFilters();
+    if (testResultsList) testResultsList.setAttribute('aria-busy', 'false');
+    announceStatus(`Self-test suite complete: ${summary.passed} of ${summary.total} passed.`);
     btnRunTests.removeAttribute('disabled');
   });
 }
@@ -864,7 +938,7 @@ function initEventListeners() {
   // Text input debounce
   inputText.addEventListener('input', () => {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(runProcessing, 100);
+    debounceTimer = setTimeout(runProcessing, INPUT_DEBOUNCE_MS);
   });
 
   // Config changes
@@ -909,6 +983,8 @@ Status: VERIFIED_LOCAL_ONLY`;
   // Explicit Redact Button Click
   btnRunRedact?.addEventListener('click', () => {
     runProcessing();
+    const count = findingsCountBadge?.textContent || '0';
+    announceStatus(`Redaction complete. ${count} PII findings masked locally.`);
     logger.log({
       operation: 'REDACT',
       category: 'ENGINE',
@@ -1017,6 +1093,16 @@ Status: VERIFIED_LOCAL_ONLY`;
     e.stopPropagation();
     if (tabDocs instanceof HTMLDetailsElement) {
       tabDocs.open = !tabDocs.open;
+    }
+  });
+
+  // Close Filters popover on Escape key and return focus to summary
+  const configDetails = document.querySelector('.kv-config-details');
+  configDetails?.addEventListener('keydown', (e) => {
+    if (/** @type {KeyboardEvent} */ (e).key === 'Escape' && configDetails instanceof HTMLDetailsElement && configDetails.open) {
+      configDetails.open = false;
+      const summary = configDetails.querySelector('summary');
+      if (summary instanceof HTMLElement) summary.focus();
     }
   });
 

@@ -14,6 +14,32 @@ import { logger } from './logger.js';
 export class KavachStateManager {
   constructor() {
     this.pseudonymizer = new Pseudonymizer();
+    this.runId = `run_${Date.now()}`;
+    this.sourceType = 'text';
+    /** @type {string | null} */
+    this.fileName = null;
+    this.rawSourceText = '';
+    this.redactedText = '';
+    /** @type {Array<import('./types.js').PiiFinding>} */
+    this.findings = [];
+    /** @type {Array<Array<string>> | null} */
+    this.parsedCsvRows = null;
+    /** @type {Array<Array<string>> | null} */
+    this.redactedCsvRows = null;
+    /** @type {{
+     *   enabledTypes: Set<string>,
+     *   redactionMode: string,
+     *   sanitizeCsvFormulas: boolean,
+     *   requireVerhoeffForAadhaar: boolean,
+     *   customMasks: Record<string, string>
+     * }} */
+    this.config = {
+      enabledTypes: new Set(Object.values(PiiType)),
+      redactionMode: RedactionMode.FULL_MASK,
+      sanitizeCsvFormulas: true,
+      requireVerhoeffForAadhaar: true,
+      customMasks: {}
+    };
     this.reset();
   }
 
