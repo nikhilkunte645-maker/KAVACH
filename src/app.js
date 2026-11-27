@@ -974,10 +974,32 @@ Status: VERIFIED_LOCAL_ONLY`;
   logger.subscribe(renderLogs);
 }
 
+/**
+ * Initializes the mobile Original / Redacted pane switcher.
+ */
+function initMobilePaneToggle() {
+  const toggleBtns = document.querySelectorAll('.kv-mobile-pane-btn');
+  const panes = document.querySelectorAll('.kv-pane[data-pane-name]');
+  toggleBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-pane');
+      toggleBtns.forEach((b) => {
+        const isActive = b === btn;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      panes.forEach((pane) => {
+        pane.classList.toggle('mobile-active', pane.getAttribute('data-pane-name') === target);
+      });
+    });
+  });
+}
+
 // Entrypoint
 document.addEventListener('DOMContentLoaded', () => {
   initLiquidTabs();
   initSegmentedControl();
+  initMobilePaneToggle();
   initScrollSync();
   initFileDropZone();
   initSelfTestRunner();
